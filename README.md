@@ -1,1 +1,1 @@
-# VeriRAG: Knowledge Graph-Augmented RAG forVerilog and Assertions
+# VeriRAG: Knowledge Graph-Augmented RAG for Verilog and Assertions
