@@ -47,12 +47,5 @@ If you use VeriRAG in your research, please cite:
 
 
 
-@misc{verirag2025,
-title={VeriRAG: Knowledge-Guided Retrieval-Augmented Generation for Verilog Automation},
-author={Jayanth et al.},
-year={2025},
-note={https://github.com/
-<your_username>/VeriRAG}
-}
 
 
