@@ -45,7 +45,14 @@ Verilog RTL / SVA Generation
 ## 📄 Citation
 
 If you use VeriRAG in your research, please cite:
+@inproceedings{verirag-aspdac,
+  title={VeriRAG: A Knowledge Graph-Augmented RAG for Verilog and Assertion Generation},
+  author={Jayanth ,Thangellamudi and Saravanan, Raghul and Sai Manoj, P D},
+  url = {Paper=https://mason.gmu.edu/~rsaravan/papers/VeriRAG.pdf         URL=https://mason.gmu.edu/~rsaravan/projects/VeriRAG.html},
 
+  booktitle={IEEE/ACM ASP-DAC},
+  year={2026}
+}
 
 
 
