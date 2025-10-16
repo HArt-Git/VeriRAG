@@ -20,14 +20,39 @@ It enables semantic understanding, retrieval, and generation of **RTL** and **SV
   Generates context-aware prompts for synthesizing Verilog RTL or SystemVerilog Assertions.
 
 
-flowchart TD
-  A["Dataset (Verilog / CSV)"] --> B["PyVerilog Parsing"]
-  B --> C["RDF Knowledge Graph (.ttl)"]
-  C --> D["OpenAI Embeddings → ChromaDB"]
-  D --> E["Hybrid Retrieval (SPARQL + Vector)"]
-  E --> F["Prompt Builder"]
-  F --> G["LLM (GPT-4o)"]
-  G --> H["Verilog RTL / SVA Generation"]
+## 🧩 Architecture Overview
 
+Dataset (Verilog / CSV)
+↓
+PyVerilog Parsing
+↓
+RDF Knowledge Graph (.ttl)
+↓
+OpenAI Embeddings → ChromaDB
+↓
+Hybrid Retrieval (SPARQL + Vector)
+↓
+Prompt Builder
+↓
+LLM (GPT-4o)
+↓
+Verilog RTL / SVA Generation
+
+
+---
+
+## 📄 Citation
+
+If you use VeriRAG in your research, please cite:
+
+
+
+@misc{verirag2025,
+title={VeriRAG: Knowledge-Guided Retrieval-Augmented Generation for Verilog Automation},
+author={Jayanth et al.},
+year={2025},
+note={https://github.com/
+<your_username>/VeriRAG}
+}
 
 
