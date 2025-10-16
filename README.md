@@ -39,14 +39,3 @@ Hybrid Retrieval (SPARQL + Vector)
 Verilog RTL / SVA Generationb 
 
 
-
-```mermaid
-flowchart TD
-    A[Dataset (Verilog / CSV)] --> B[PyVerilog Parsing]
-    B --> C[RDF Knowledge Graph (.ttl)]
-    C --> D[OpenAI Embeddings → ChromaDB]
-    D --> E[Hybrid Retrieval (SPARQL + Vector)]
-    E --> F[Prompt Builder]
-    F --> G[LLM (GPT-4o)]
-    G --> H[Verilog RTL / SVA Generation]
-
