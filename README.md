@@ -18,3 +18,22 @@ It enables semantic understanding, retrieval, and generation of **RTL** and **SV
 
 - **Prompt Builders for RTL & SVA**  
   Generates context-aware prompts for synthesizing Verilog RTL or SystemVerilog Assertions.
+
+
+## 🧩 Architecture Overview
+
+Dataset (Verilog / CSV)
+        ↓
+   PyVerilog Parsing
+        ↓
+  RDF Knowledge Graph (.ttl)
+        ↓
+   OpenAI Embeddings → ChromaDB
+        ↓
+Hybrid Retrieval (SPARQL + Vector)
+        ↓
+   Prompt Builder
+        ↓
+   LLM (GPT-4o)
+        ↓
+Verilog RTL / SVA Generationb 
