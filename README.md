@@ -19,6 +19,7 @@ It enables semantic understanding, retrieval, and generation of **RTL** and **SV
 - **Prompt Builders for RTL & SVA**  
   Generates context-aware prompts for synthesizing Verilog RTL or SystemVerilog Assertions.
 
+---
 
 ## 🧩 Architecture Overview
 
