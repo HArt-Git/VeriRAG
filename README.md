@@ -27,22 +27,27 @@ If you find this paper as useful, please cite as:
   Generates context-aware prompts for synthesizing Verilog RTL or SystemVerilog Assertions.
 
 ---
+## Prerequisites
+- This notebook is designed for Google Colab environments (mounts Google Drive under /content/drive)
+- You must provide a valid OpenAI API key
+- You should have a CSV file compatible with the expected schema (see Section 7 in the code for details).
 
+---
 ## 🧩 Architecture Overview
 Dataset (Verilog / CSV)  
-↓  
+        ↓  
 PyVerilog Parsing  
-↓  
+        ↓  
 RDF Knowledge Graph (.ttl)  
-↓  
+        ↓  
 OpenAI Embeddings → ChromaDB  
-↓  
+        ↓  
 Hybrid Retrieval (SPARQL + Vector)  
-↓  
+        ↓  
 Prompt Builder  
-↓  
+       ↓  
 LLM (GPT-4o)  
-↓  
+       ↓  
 Verilog RTL / SVA Generation
 
 
