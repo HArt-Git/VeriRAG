@@ -3,6 +3,7 @@
 VeriRAG is an **open-source framework** that unifies **Knowledge Graphs (KG)** and **Retrieval-Augmented Generation (RAG)** for intelligent Verilog automation. It enables semantic understanding, retrieval, and generation of **Register Transfer Level (RTL)** and **System Verilog Assertions (SVA)** code using Large Language Models (LLMs), RDF (Resource Description Framework) graphs, and vector databases. Additional information and paper can be found [here](https://mason.gmu.edu/~rsaravan/projects/VeriRAG.html). 
 
 If you find this paper as useful, please cite as:
+
 @inproceedings{verirag-aspdac,
   title={VeriRAG: A Knowledge Graph-Augmented RAG for Verilog and Assertion Generation},
   author={Jayanth ,Thangellamudi and Saravanan, Raghul and Sai Manoj, P D},
@@ -49,7 +50,6 @@ Verilog RTL / SVA Generation
 ---
 
 
-}
 
 
 
