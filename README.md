@@ -1,7 +1,6 @@
 # VeriRAG: Knowledge Graph-Augmented RAG for Verilog and Assertions
 
-VeriRAG is an **open-source framework** that unifies **Knowledge Graphs (KG)** and **Retrieval-Augmented Generation (RAG)** for intelligent Verilog automation.  
-It enables semantic understanding, retrieval, and generation of **RTL** and **SVA** code using LLMs, RDF graphs, and vector databases.
+VeriRAG is an **open-source framework** that unifies **Knowledge Graphs (KG)** and **Retrieval-Augmented Generation (RAG)** for intelligent Verilog automation. It enables semantic understanding, retrieval, and generation of **RTL** and **SVA** code using LLMs, RDF graphs, and vector databases.
 
 ---
 
