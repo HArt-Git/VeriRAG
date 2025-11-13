@@ -1,0 +1,3559 @@
+text
+"<s>[INST] Write Verilog code for a 2-input AND gate. [/INST]
+module and_gate (input wire a, input wire b, output wire y);
+    assign y = a & b;
+endmodule </s>"
+"<s>[INST] Write Verilog code for a 2-input OR gate. [/INST]
+module or_gate (input wire a, input wire b, output wire y);
+    assign y = a | b;
+endmodule </s>"
+"<s>[INST] Write Verilog code for a NOT gate. [/INST]
+module not_gate (input wire a, output wire y);
+    assign y = ~a;
+endmodule </s>"
+"<s>[INST] Write Verilog code for a 2-input NAND gate. [/INST]
+module nand_gate (input wire a, input wire b, output wire y);
+    assign y = ~(a & b);
+endmodule </s>"
+"<s>[INST] Write Verilog code for a 2-input NOR gate. [/INST]
+module nor_gate (input wire a, input wire b, output wire y);
+    assign y = ~(a | b);
+endmodule </s>"
+"<s>[INST] Write Verilog code for a 2-input XOR gate. [/INST]
+module xor_gate (input wire a, input wire b, output wire y);
+    assign y = a ^ b;
+endmodule </s>"
+"<s>[INST] Write Verilog code for a 2-input XNOR gate. [/INST]
+module xnor_gate (input wire a, input wire b, output wire y);
+    assign y = ~(a ^ b);
+endmodule </s>"
+"<s>[INST] Write Verilog code for a half adder. [/INST]
+module half_adder (input wire a, input wire b, output wire sum, output wire carry);
+    assign sum = a ^ b;
+    assign carry = a & b;
+endmodule </s>"
+"<s>[INST] Write Verilog code for a full adder. [/INST]
+module full_adder (input wire a, input wire b, input wire cin, output wire sum, output wire carry);
+    assign sum = a ^ b ^ cin;
+    assign carry = (a & b) | (b & cin) | (cin & a);
+endmodule </s>"
+"<s>[INST] Write Verilog code for a ripple carry adder. [/INST]
+module ripple_carry_adder #(parameter N = 4)(input wire [N-1:0] a, input wire [N-1:0] b, input wire cin, output wire [N-1:0] sum, output wire cout);
+    wire [N:0] carry;
+    assign carry[0] = cin;
+    genvar i;
+    generate
+        for (i = 0; i < N; i = i + 1) begin
+            full_adder FA (.a(a[i]), .b(b[i]), .cin(carry[i]), .sum(sum[i]), .carry(carry[i+1]));
+        end
+    endgenerate
+    assign cout = carry[N];
+endmodule </s>"
+"<s>[INST] Write Verilog code for a carry look-ahead adder. [/INST]
+module carry_lookahead_adder #(parameter N = 4)(input wire [N-1:0] a, input wire [N-1:0] b, input wire cin, output wire [N-1:0] sum, output wire cout);
+    wire [N-1:0] p, g;
+    wire [N:0] c;
+    assign c[0] = cin;
+    genvar i;
+    generate
+        for (i = 0; i < N; i = i + 1) begin
+            assign p[i] = a[i] ^ b[i];
+            assign g[i] = a[i] & b[i];
+            assign c[i+1] = g[i] | (p[i] & c[i]);
+            assign sum[i] = p[i] ^ c[i];
+        end
+    endgenerate
+    assign cout = c[N];
+endmodule </s>"
+"<s>[INST] Write Verilog code for a half subtractor. [/INST]
+module half_subtractor (input wire a, input wire b, output wire diff, output wire borrow);
+    assign diff = a ^ b;
+    assign borrow = ~a & b;
+endmodule </s>"
+"<s>[INST] Write Verilog code for a full subtractor. [/INST]
+module full_subtractor (input wire a, input wire b, input wire bin, output wire diff, output wire bout);
+    assign diff = a ^ b ^ bin;
+    assign bout = (~a & b) | (~a & bin) | (b & bin);
+endmodule </s>"
+"<s>[INST] Write Verilog code for a multiplier. [/INST]
+module multiplier #(parameter N = 4)(input wire [N-1:0] a, input wire [N-1:0] b, output wire [2*N-1:0] product);
+    assign product = a * b;
+endmodule </s>"
+"<s>[INST] Write Verilog code for a divider. [/INST]
+module divider #(parameter N = 4)(input wire [N-1:0] dividend, input wire [N-1:0] divisor, output wire [N-1:0] quotient, output wire [N-1:0] remainder);
+    assign quotient = dividend / divisor;
+    assign remainder = dividend % divisor;
+endmodule </s>"
+"<s>[INST] Write Verilog code for a 4-bit incrementer. [/INST]
+module incrementer #(parameter N = 4)(input wire [N-1:0] in, output wire [N-1:0] out);
+    assign out = in + 1;
+endmodule </s>"
+"<s>[INST] Write Verilog code for a 4-bit decrementer. [/INST]
+module decrementer #(parameter N = 4)(input wire [N-1:0] in, output wire [N-1:0] out);
+    assign out = in - 1;
+endmodule </s>"
+"<s>[INST] Write Verilog code for an SR latch. [/INST]
+module sr_latch (input wire s, input wire r, output reg q, output reg q_bar);
+    always @(*) begin
+        case ({s, r})
+            2'b01: {q, q_bar} = 2'b01;
+            2'b10: {q, q_bar} = 2'b10;
+            2'b00: {q, q_bar} = {q, q_bar};
+            default: {q, q_bar} = 2'bxx;
+        endcase
+    end
+endmodule </s>"
+"<s>[INST] Write Verilog code for a D latch. [/INST]
+module d_latch (input wire d, input wire enable, output reg q);
+    always @(*) begin
+        if (enable)
+            q = d;
+    end
+endmodule </s>"
+"<s>[INST] Write Verilog code for a JK flip-flop. [/INST]
+module jk_flip_flop (input wire clk, input wire j, input wire k, output reg q);
+    always @(posedge clk) begin
+        case ({j, k})
+            2'b00: q = q;
+            2'b01: q = 0;
+            2'b10: q = 1;
+            2'b11: q = ~q;
+        endcase
+    end
+endmodule </s>"
+"<s>[INST] Write Verilog code for a T flip-flop. [/INST]
+module t_flip_flop (input wire clk, input wire t, output reg q);
+    always @(posedge clk) begin
+        if (t)
+            q = ~q;
+    end
+endmodule </s>"
+"<s>[INST] Write Verilog code for a master-slave D flip-flop. [/INST]
+module master_slave_dff (input wire clk, input wire d, output wire q);
+    reg q_master, q_slave;
+    always @(posedge clk) q_master <= d;
+    always @(negedge clk) q_slave <= q_master;
+    assign q = q_slave;
+endmodule </s>"
+"<s>[INST] Write Verilog code for an SIPO shift register. [/INST]
+module sipo_shift_register #(parameter N = 4)(input wire clk, input wire reset, input wire d_in, output reg [N-1:0] q);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            q <= 0;
+        else
+            q <= {q[N-2:0], d_in};
+    end
+endmodule </s>"
+"<s>[INST] Write Verilog code for a PISO shift register. [/INST]
+module piso_shift_register #(parameter N = 4)(input wire clk, input wire reset, input wire load, input wire [N-1:0] d_in, output reg d_out);
+    reg [N-1:0] shift_reg;
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            shift_reg <= 0;
+        else if (load)
+            shift_reg <= d_in;
+        else
+            shift_reg <= {shift_reg[N-2:0], 1'b0};
+    end
+    assign d_out = shift_reg[N-1];
+endmodule </s>"
+"<s>[INST] Write Verilog code for a SISO shift register. [/INST]
+module siso_shift_register #(parameter N = 4)(input wire clk, input wire reset, input wire d_in, output reg d_out);
+    reg [N-1:0] shift_reg;
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            shift_reg <= 0;
+        else
+            shift_reg <= {shift_reg[N-2:0], d_in};
+    end
+    assign d_out = shift_reg[N-1];
+endmodule </s>"
+"<s>[INST] Write Verilog code for a PIPO shift register. [/INST]
+module pipo_shift_register #(parameter N = 4)(input wire clk, input wire reset, input wire [N-1:0] d_in, output reg [N-1:0] q);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            q <= 0;
+        else
+            q <= d_in;
+    end
+endmodule </s>"
+"<s>[INST] Write Verilog code for a binary up counter. [/INST]
+module binary_up_counter #(parameter N = 4)(input wire clk, input wire reset, output reg [N-1:0] count);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            count <= 0;
+        else
+            count <= count + 1;
+    end
+endmodule </s>"
+"<s>[INST] Write Verilog code for a binary down counter. [/INST]
+module binary_down_counter #(parameter N = 4)(input wire clk, input wire reset, output reg [N-1:0] count);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            count <= {N{1'b1}};
+        else
+            count <= count - 1;
+    end
+endmodule </s>"
+"<s>[INST] Write Verilog code for a binary up-down counter. [/INST]
+module binary_up_down_counter #(parameter N = 4)(input wire clk, input wire reset, input wire up, output reg [N-1:0] count);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            count <= 0;
+        else if (up)
+            count <= count + 1;
+        else
+            count <= count - 1;
+    end
+endmodule </s>"
+"<s>[INST] Write Verilog code for a BCD counter. [/INST]
+module bcd_counter #(parameter N = 4)(input wire clk, input wire reset, output reg [N-1:0] count);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            count <= 0;
+        else if (count == 9)
+            count <= 0;
+        else
+            count <= count + 1;
+    end
+endmodule </s>"
+"<s>[INST] Write Verilog code for a ring counter. [/INST]
+module ring_counter #(parameter N = 4)(input wire clk, input wire reset, output reg [N-1:0] count);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            count <= 1;
+        else
+            count <= {count[N-2:0], count[N-1]};
+    end
+endmodule </s>"
+"<s>[INST] Write Verilog code for a Johnson counter. [/INST]
+module johnson_counter #(parameter N = 4)(input wire clk, input wire reset, output reg [N-1:0] count);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            count <= 0;
+        else
+            count <= {~count[0], count[N-1:1]};
+    end
+endmodule </s>"
+"<s>[INST] Generate a Verilog module for a 2:1 multiplexer. [/INST] module mux2to1 (input wire a, b, sel, output wire y);
+    assign y = sel ? b : a;
+endmodule </s>"
+"<s>[INST] Write a Verilog module for a D flip-flop with an asynchronous reset. [/INST] module d_flip_flop (input wire clk, reset, d, output reg q);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            q <= 0;
+        else
+            q <= d;
+    end
+endmodule </s>"
+"<s>[INST] Create a Verilog module for a 4-bit synchronous counter with an enable signal. [/INST] module counter4bit (input wire clk, enable, reset, output reg [3:0] count);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            count <= 4'b0000;
+        else if (enable)
+            count <= count + 1;
+    end
+endmodule </s>"
+"<s>[INST] Generate a Verilog code for a 4-to-1 multiplexer using behavioral modeling. [/INST] module mux4to1 (input wire [3:0] data, input wire [1:0] sel, output reg y);
+    always @(*) begin
+        case (sel)
+            2'b00: y = data[0];
+            2'b01: y = data[1];
+            2'b10: y = data[2];
+            2'b11: y = data[3];
+        endcase
+    end
+endmodule </s>"
+"<s>[INST] Write a Verilog testbench for a 2:1 multiplexer. [/INST] module tb_mux2to1;
+    reg a, b, sel;
+    wire y;
+    mux2to1 uut (.a(a), .b(b), .sel(sel), .y(y));
+    initial begin
+        $monitor(""a=%b, b=%b, sel=%b, y=%b"", a, b, sel, y);
+        a = 0; b = 1; sel = 0; #10;
+        a = 1; b = 0; sel = 1; #10;
+        $finish;
+    end
+endmodule </s>"
+"<s>[INST] Design a Verilog code for a 7-segment display decoder for decimal digits. [/INST] module seven_seg_decoder (input wire [3:0] digit, output reg [6:0] seg);
+    always @(*) begin
+        case (digit)
+            4'b0000: seg = 7'b1111110; // 0
+            4'b0001: seg = 7'b0110000; // 1
+            4'b0010: seg = 7'b1101101; // 2
+            4'b0011: seg = 7'b1111001; // 3
+            4'b0100: seg = 7'b0110011; // 4
+            4'b0101: seg = 7'b1011011; // 5
+            4'b0110: seg = 7'b1011111; // 6
+            4'b0111: seg = 7'b1110000; // 7
+            4'b1000: seg = 7'b1111111; // 8
+            4'b1001: seg = 7'b1111011; // 9
+            default: seg = 7'b0000000; // blank
+        endcase
+    end
+endmodule </s>"
+"<s>[INST] Write Verilog code for a priority encoder with 8 inputs and 3 outputs. [/INST] module priority_encoder (input wire [7:0] in, output reg [2:0] out);
+    always @(*) begin
+        casez (in)
+            8'b1???????: out = 3'd7;
+            8'b01??????: out = 3'd6;
+            8'b001?????: out = 3'd5;
+            8'b0001????: out = 3'd4;
+            8'b00001???: out = 3'd3;
+            8'b000001??: out = 3'd2;
+            8'b0000001?: out = 3'd1;
+            8'b00000001: out = 3'd0;
+            default: out = 3'd0;
+        endcase
+    end
+endmodule </s>"
+"<s>[INST] Generate Verilog code for a 16-bit register with enable and reset signals. [/INST] module register16 (input wire clk, reset, enable, input wire [15:0] d, output reg [15:0] q);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            q <= 16'b0;
+        else if (enable)
+            q <= d;
+    end
+endmodule </s>"
+"<s>[INST] Write a Verilog module for a traffic light controller with red, green, and yellow states. [/INST] module traffic_light (input wire clk, reset, output reg [2:0] light);
+    reg [1:0] state;
+    parameter RED = 2'b00, GREEN = 2'b01, YELLOW = 2'b10;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state <= RED;
+            light <= 3'b100;
+        end else begin
+            case (state)
+                RED: begin
+                    state <= GREEN;
+                    light <= 3'b010;
+                end
+                GREEN: begin
+                    state <= YELLOW;
+                    light <= 3'b001;
+                end
+                YELLOW: begin
+                    state <= RED;
+                    light <= 3'b100;
+                end
+            endcase
+        end
+    end
+endmodule </s>"
+"<s>[INST] Write a Verilog module for a 3-to-8 decoder. [/INST] module decoder3to8 (input wire [2:0] in, output reg [7:0] out);
+    always @(*) begin
+        out = 8'b00000000;
+        case (in)
+            3'b000: out[0] = 1;
+            3'b001: out[1] = 1;
+            3'b010: out[2] = 1;
+            3'b011: out[3] = 1;
+            3'b100: out[4] = 1;
+            3'b101: out[5] = 1;
+            3'b110: out[6] = 1;
+            3'b111: out[7] = 1;
+        endcase
+    end
+endmodule </s>"
+"<s>[INST] Design a Verilog module for an 8-bit bidirectional shift register. [/INST] module shift_register (input wire clk, reset, dir, input wire [7:0] data_in, output reg [7:0] data_out);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            data_out <= 8'b0;
+        else if (dir)
+            data_out <= {data_out[6:0], data_in[0]}; // Shift right
+        else
+            data_out <= {data_in[7], data_out[7:1]}; // Shift left
+    end
+endmodule </s>"
+"<s>[INST] Write Verilog code for a 32-bit ripple carry adder. [/INST] module ripple_carry_adder32 (input wire [31:0] a, b, input wire cin, output wire [31:0] sum, output wire cout);
+    wire [31:0] carry;
+    genvar i;
+    generate
+        for (i = 0; i < 32; i = i + 1) begin : adders
+            if (i == 0)
+                full_adder fa (a[i], b[i], cin, sum[i], carry[i]);
+            else
+                full_adder fa (a[i], b[i], carry[i-1], sum[i], carry[i]);
+        end
+    endgenerate
+    assign cout = carry[31];
+endmodule </s>"
+"<s>[INST] Create a Verilog module for a Mealy state machine with two states. [/INST] module mealy_fsm (input wire clk, reset, x, output reg y);
+    reg state;
+    parameter S0 = 0, S1 = 1;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state <= S0;
+            y <= 0;
+        end else begin
+            case (state)
+                S0: if (x) begin
+                        state <= S1;
+                        y <= 1;
+                    end else
+                        y <= 0;
+                S1: if (~x) begin
+                        state <= S0;
+                        y <= 0;
+                    end else
+                        y <= 1;
+            endcase
+        end
+    end
+endmodule </s>"
+"<s>[INST] Generate Verilog code for a 64-bit barrel shifter. [/INST] module barrel_shifter64 (input wire [63:0] data, input wire [5:0] shift, input wire dir, output reg [63:0] result);
+    always @(*) begin
+        if (dir) // Right shift
+            result = data >> shift;
+        else // Left shift
+            result = data << shift;
+    end
+endmodule </s>"
+"<s>[INST] Write a Verilog module for a binary to Gray code converter. [/INST] module binary_to_gray (input wire [3:0] binary, output wire [3:0] gray);
+    assign gray[3] = binary[3];
+    assign gray[2] = binary[3] ^ binary[2];
+    assign gray[1] = binary[2] ^ binary[1];
+    assign gray[0] = binary[1] ^ binary[0];
+endmodule </s>"
+"<s>[INST] Design a Verilog module for a clock divider that generates a 1Hz signal from a 50MHz clock. [/INST] module clock_divider (input wire clk, reset, output reg clk_out);
+    reg [25:0] counter;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            counter <= 26'b0;
+            clk_out <= 0;
+        end else if (counter == 24999999) begin
+            counter <= 26'b0;
+            clk_out <= ~clk_out;
+        end else
+            counter <= counter + 1;
+    end
+endmodule </s>"
+"<s>[INST] Create a Verilog module for a 4-bit binary to BCD converter. [/INST] module binary_to_bcd (input wire [3:0] binary, output reg [7:0] bcd);
+    always @(*) begin
+        bcd = 8'b0;
+        if (binary > 4'b1001)
+            bcd = {4'b0001, binary - 4'b1010};
+        else
+            bcd = {4'b0000, binary};
+    end
+endmodule </s>"
+"<s>[INST] Write a Verilog module for an edge detector (rising and falling edges). [/INST] module edge_detector (input wire clk, reset, signal, output reg rising_edge, falling_edge);
+    reg signal_d;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            signal_d <= 0;
+            rising_edge <= 0;
+            falling_edge <= 0;
+        end else begin
+            rising_edge <= signal & ~signal_d;
+            falling_edge <= ~signal & signal_d;
+            signal_d <= signal;
+        end
+    end
+endmodule </s>"
+"<s>[INST] Generate Verilog code for a digital comparator to compare two 8-bit numbers. [/INST] module comparator8 (input wire [7:0] a, b, output wire greater, equal, less);
+    assign greater = a > b;
+    assign equal = a == b;
+    assign less = a < b;
+endmodule </s>"
+"<s>[INST] Write a Verilog module for a 4-bit parity generator. [/INST] module parity_generator (input wire [3:0] data, output wire parity);
+    assign parity = ^data;
+endmodule </s>"
+"<s>[INST] Create a Verilog module for a Johnson counter with 4 bits. [/INST] module johnson_counter (input wire clk, reset, output reg [3:0] q);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            q <= 4'b0000;
+        else
+            q <= {~q[0], q[3:1]};
+    end
+endmodule </s>"
+"<s>[INST] Generate Verilog code for a 4x4 matrix multiplier. [/INST] module matrix_multiplier (input wire [3:0] a[3:0], b[3:0], output wire [7:0] result[3:0]);
+    genvar i, j;
+    generate
+        for (i = 0; i < 4; i = i + 1) begin : rows
+            for (j = 0; j < 4; j = j + 1) begin : cols
+                assign result[i][j] = a[i] * b[j];
+            end
+        end
+    endgenerate
+endmodule </s>"
+"<s>[INST] Write a Verilog module for a 32-bit ALU with arithmetic and logical operations. [/INST] module alu32 (input wire [31:0] a, b, input wire [3:0] opcode, output reg [31:0] result);
+    always @(*) begin
+        case (opcode)
+            4'b0000: result = a + b; // Addition
+            4'b0001: result = a - b; // Subtraction
+            4'b0010: result = a & b; // Bitwise AND
+            4'b0011: result = a | b; // Bitwise OR
+            4'b0100: result = a ^ b; // XOR
+            4'b0101: result = a << b; // Logical left shift
+            4'b0110: result = a >> b; // Logical right shift
+            default: result = 32'b0;
+        endcase
+    end
+endmodule </s>"
+"<s>[INST] Create a Verilog module for a pulse generator with a configurable duty cycle. [/INST] module pulse_generator (input wire clk, reset, input wire [7:0] duty_cycle, output reg pulse);
+    reg [7:0] counter;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            counter <= 0;
+            pulse <= 0;
+        end else begin
+            if (counter < duty_cycle)
+                pulse <= 1;
+            else
+                pulse <= 0;
+
+            counter <= (counter == 255) ? 0 : counter + 1;
+        end
+    end
+endmodule </s>"
+"<s>[INST] Design a Verilog module for a Fibonacci sequence generator. [/INST] module fibonacci (input wire clk, reset, output reg [15:0] fib);
+    reg [15:0] fib_prev;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            fib <= 16'd1;
+            fib_prev <= 16'd0;
+        end else begin
+            {fib_prev, fib} <= {fib, fib + fib_prev};
+        end
+    end
+endmodule </s>"
+"<s>[INST] Write Verilog code for a traffic light controller for two intersections. [/INST] module traffic_light_dual (input wire clk, reset, output reg [2:0] light_main, light_side);
+    reg [1:0] state;
+    parameter MAIN_GREEN = 2'b00, MAIN_YELLOW = 2'b01, SIDE_GREEN = 2'b10, SIDE_YELLOW = 2'b11;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state <= MAIN_GREEN;
+            light_main <= 3'b100;
+            light_side <= 3'b001;
+        end else begin
+            case (state)
+                MAIN_GREEN: begin
+                    state <= MAIN_YELLOW;
+                    light_main <= 3'b010;
+                end
+                MAIN_YELLOW: begin
+                    state <= SIDE_GREEN;
+                    light_main <= 3'b001;
+                    light_side <= 3'b100;
+                end
+                SIDE_GREEN: begin
+                    state <= SIDE_YELLOW;
+                    light_side <= 3'b010;
+                end
+                SIDE_YELLOW: begin
+                    state <= MAIN_GREEN;
+                    light_main <= 3'b100;
+                    light_side <= 3'b001;
+                end
+            endcase
+        end
+    end
+endmodule </s>"
+"<s>[INST] Create a Verilog module for a digital thermometer simulation. [/INST] module thermometer (input wire clk, reset, input wire [7:0] temp_sensor, output reg [2:0] status);
+    parameter COLD = 3'b001, WARM = 3'b010, HOT = 3'b100;
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            status <= COLD;
+        else if (temp_sensor < 8'd20)
+            status <= COLD;
+        else if (temp_sensor < 8'd30)
+            status <= WARM;
+        else
+            status <= HOT;
+    end
+endmodule </s>"
+"<s>[INST] Generate Verilog code for a 16x16 RAM module with read and write enable. [/INST] module ram16x16 (input wire clk, we, input wire [3:0] addr, input wire [15:0] data_in, output reg [15:0] data_out);
+    reg [15:0] mem [15:0];
+    always @(posedge clk) begin
+        if (we)
+            mem[addr] <= data_in;
+        else
+            data_out <= mem[addr];
+    end
+endmodule </s>"
+"<s>[INST] Write Verilog code for a pulse width modulation (PWM) generator. [/INST] module pwm_generator (input wire clk, reset, input wire [7:0] duty_cycle, output reg pwm);
+    reg [7:0] counter;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            counter <= 8'd0;
+            pwm <= 1'b0;
+        end else begin
+            if (counter < duty_cycle)
+                pwm <= 1'b1;
+            else
+                pwm <= 1'b0;
+            counter <= counter + 1;
+        end
+    end
+endmodule </s>"
+"<s>[INST] Design a Verilog module for a 3-bit synchronous up-down counter. [/INST] module up_down_counter (input wire clk, reset, up_down, output reg [2:0] count);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            count <= 3'b000;
+        else if (up_down)
+            count <= count + 1;
+        else
+            count <= count - 1;
+    end
+endmodule </s>"
+"<s>[INST] Create a Verilog module for a 64-bit register file with 16 registers. [/INST] module register_file (input wire clk, reset, we, input wire [3:0] addr, input wire [63:0] data_in, output reg [63:0] data_out);
+    reg [63:0] reg_file [15:0];
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            reg_file[addr] <= 64'd0;
+        else if (we)
+            reg_file[addr] <= data_in;
+        else
+            data_out <= reg_file[addr];
+    end
+endmodule </s>"
+"<s>[INST] Generate Verilog code for an 8-bit multiplier using shift-and-add. [/INST] module multiplier (input wire [7:0] a, b, output reg [15:0] product);
+    reg [7:0] temp_a;
+    reg [7:0] temp_b;
+    reg [15:0] temp_product;
+    integer i;
+    always @(*) begin
+        temp_a = a;
+        temp_b = b;
+        temp_product = 0;
+        for (i = 0; i < 8; i = i + 1) begin
+            if (temp_b[0])
+                temp_product = temp_product + (temp_a << i);
+            temp_b = temp_b >> 1;
+        end
+        product = temp_product;
+    end
+endmodule </s>"
+"<s>[INST] Design a Verilog module for a sequence detector for 1011 (Mealy machine). [/INST] module sequence_detector (input wire clk, reset, x, output reg y);
+    reg [2:0] state;
+    parameter S0 = 3'b000, S1 = 3'b001, S2 = 3'b010, S3 = 3'b011, S4 = 3'b100;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state <= S0;
+            y <= 0;
+        end else begin
+            case (state)
+                S0: state <= x ? S1 : S0;
+                S1: state <= x ? S2 : S0;
+                S2: state <= x ? S2 : S3;
+                S3: state <= x ? S4 : S0;
+                S4: begin
+                    y <= 1;
+                    state <= x ? S1 : S0;
+                end
+            endcase
+        end
+    end
+endmodule </s>"
+"<s>[INST] Create Verilog code for a clock gating module. [/INST] module clock_gating (input wire clk, enable, output wire gated_clk);
+    assign gated_clk = clk & enable;
+endmodule </s>"
+"<s>[INST] Write Verilog code for an 8-bit linear feedback shift register (LFSR). [/INST] module lfsr (input wire clk, reset, output reg [7:0] q);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            q <= 8'b00000001;
+        else
+            q <= {q[6:0], q[7] ^ q[5]};
+    end
+endmodule </s>"
+"<s>[INST] Generate Verilog code for a modulo-10 counter. [/INST] module mod10_counter (input wire clk, reset, output reg [3:0] count);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            count <= 4'b0000;
+        else if (count == 4'b1001)
+            count <= 4'b0000;
+        else
+            count <= count + 1;
+    end
+endmodule </s>"
+"<s>[INST] Design a Verilog module for a 4x4 crossbar switch. [/INST] module crossbar_switch (input wire [3:0] sel, input wire [3:0] data_in[3:0], output wire [3:0] data_out[3:0]);
+    genvar i, j;
+    generate
+        for (i = 0; i < 4; i = i + 1) begin : outputs
+            for (j = 0; j < 4; j = j + 1) begin : inputs
+                assign data_out[i][j] = (sel[i] == j) ? data_in[j][i] : 1'bz;
+            end
+        end
+    endgenerate
+endmodule </s>"
+"<s>[INST] Write Verilog code for a dual-port RAM with independent read/write. [/INST] module dual_port_ram (input wire clk, we, input wire [3:0] read_addr, write_addr, input wire [7:0] data_in, output reg [7:0] data_out);
+    reg [7:0] mem [15:0];
+    always @(posedge clk) begin
+        if (we)
+            mem[write_addr] <= data_in;
+        data_out <= mem[read_addr];
+    end
+endmodule </s>"
+"<s>[INST] Generate Verilog code for a thermometer code to binary converter. [/INST] module thermometer_to_binary (input wire [7:0] thermometer, output wire [2:0] binary);
+    assign binary = $clog2(thermometer);
+endmodule </s>"
+"<s>[INST] Write Verilog code for a binary to 7-segment decoder. [/INST] module binary_to_7seg (input wire [3:0] binary, output reg [6:0] seg);
+    always @(*) begin
+        case (binary)
+            4'd0: seg = 7'b1111110;
+            4'd1: seg = 7'b0110000;
+            4'd2: seg = 7'b1101101;
+            4'd3: seg = 7'b1111001;
+            4'd4: seg = 7'b0110011;
+            4'd5: seg = 7'b1011011;
+            4'd6: seg = 7'b1011111;
+            4'd7: seg = 7'b1110000;
+            4'd8: seg = 7'b1111111;
+            4'd9: seg = 7'b1111011;
+            default: seg = 7'b0000000;
+        endcase
+    end
+endmodule </s>"
+"<s>[INST] Generate Verilog code for a 32-bit priority encoder. [/INST] module priority_encoder32 (input wire [31:0] in, output reg [4:0] out);
+    always @(*) begin
+        casex (in)
+            32'b1???????????????????????????????: out = 5'd31;
+            32'b01??????????????????????????????: out = 5'd30;
+            32'b001?????????????????????????????: out = 5'd29;
+            32'b0001????????????????????????????: out = 5'd28;
+            // Remaining cases here...
+            32'b00000000000000000000000000000001: out = 5'd0;
+            default: out = 5'bxxxxx;
+        endcase
+    end
+endmodule </s>"
+"<s>[INST] Design Verilog code for a 4-bit comparator using cascading logic. [/INST] module comparator4 (input wire [3:0] a, b, output wire gt, lt, eq);
+    assign gt = (a > b);
+    assign lt = (a < b);
+    assign eq = (a == b);
+endmodule </s>"
+"<s>[INST] Write a Verilog module for a digital stopwatch with start, stop, and reset. [/INST] module stopwatch (input wire clk, start, stop, reset, output reg [15:0] time);
+    always @(posedge clk) begin
+        if (reset)
+            time <= 16'b0;
+        else if (start & ~stop)
+            time <= time + 1;
+    end
+endmodule </s>"
+"<s>[INST] Create Verilog code for a clock divider with selectable division factor. [/INST] module clock_divider (input wire clk, reset, input wire [3:0] div, output reg clk_out);
+    reg [3:0] count;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            count <= 0;
+            clk_out <= 0;
+        end else if (count == div) begin
+            count <= 0;
+            clk_out <= ~clk_out;
+        end else begin
+            count <= count + 1;
+        end
+    end
+endmodule </s>"
+"<s>[INST] Generate Verilog code for a 2D array multiplier (4x4). [/INST] module array_multiplier (input wire [3:0] a[3:0], b[3:0], output reg [7:0] result[3:0]);
+    integer i, j;
+    always @(*) begin
+        for (i = 0; i < 4; i = i + 1)
+            for (j = 0; j < 4; j = j + 1)
+                result[i][j] = a[i] * b[j];
+    end
+endmodule </s>"
+"<s>[INST] Write Verilog code for a pipeline processor with 3 stages (IF, ID, EX). [/INST] module pipeline_processor (input wire clk, reset, input wire [31:0] instr, output wire [31:0] result);
+    reg [31:0] if_reg, id_reg, ex_reg;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            if_reg <= 0;
+            id_reg <= 0;
+            ex_reg <= 0;
+        end else begin
+            if_reg <= instr; // Fetch
+            id_reg <= if_reg; // Decode
+            ex_reg <= id_reg + 1; // Execute
+        end
+    end
+    assign result = ex_reg;
+endmodule </s>"
+"<s>[INST] Design Verilog code for a VGA signal generator for 640x480 resolution. [/INST] module vga_generator (input wire clk, reset, output wire hsync, vsync, output reg [9:0] x, y);
+    reg [9:0] h_count, v_count;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            h_count <= 0;
+            v_count <= 0;
+        end else begin
+            if (h_count == 799) begin
+                h_count <= 0;
+                if (v_count == 524)
+                    v_count <= 0;
+                else
+                    v_count <= v_count + 1;
+            end else
+                h_count <= h_count + 1;
+        end
+    end
+    assign hsync = (h_count >= 656 && h_count < 752);
+    assign vsync = (v_count >= 490 && v_count < 492);
+    assign x = (h_count < 640) ? h_count : 10'b0;
+    assign y = (v_count < 480) ? v_count : 10'b0;
+endmodule </s>"
+"<s>[INST] Write Verilog code for a dual-clock FIFO. [/INST] module dual_clock_fifo (input wire wr_clk, rd_clk, reset, we, re, input wire [7:0] data_in, output reg [7:0] data_out);
+    reg [7:0] fifo_mem [15:0];
+    reg [3:0] wr_ptr, rd_ptr;
+    always @(posedge wr_clk or posedge reset) begin
+        if (reset)
+            wr_ptr <= 0;
+        else if (we)
+            fifo_mem[wr_ptr] <= data_in;
+    end
+    always @(posedge rd_clk or posedge reset) begin
+        if (reset)
+            rd_ptr <= 0;
+        else if (re)
+            data_out <= fifo_mem[rd_ptr];
+    end
+endmodule </s>"
+"<s>[INST] Create Verilog code for an SDRAM controller interface. [/INST] module sdram_controller (input wire clk, reset, input wire [23:0] addr, input wire [15:0] data_in, output wire [15:0] data_out);
+    // SDRAM command implementation
+    // Initialization and state machine logic goes here
+endmodule </s>"
+"<s>[INST] Write Verilog code for a 4-bit BCD adder. [/INST] module bcd_adder (input wire [3:0] a, b, input wire cin, output reg [3:0] sum, output reg cout);
+    reg [4:0] temp;
+    always @(*) begin
+        temp = a + b + cin;
+        if (temp > 4'b1001) begin
+            sum = temp - 4'b1010;
+            cout = 1;
+        end else begin
+            sum = temp[3:0];
+            cout = 0;
+        end
+    end
+endmodule </s>"
+"<s>[INST] Generate Verilog code for a 16-to-1 multiplexer using 4-to-1 multiplexers. [/INST] module mux16to1 (input wire [15:0] data, input wire [3:0] sel, output wire y);
+    wire [3:0] mux_out;
+    mux4to1 m1 (.data(data[3:0]), .sel(sel[1:0]), .y(mux_out[0]));
+    mux4to1 m2 (.data(data[7:4]), .sel(sel[1:0]), .y(mux_out[1]));
+    mux4to1 m3 (.data(data[11:8]), .sel(sel[1:0]), .y(mux_out[2]));
+    mux4to1 m4 (.data(data[15:12]), .sel(sel[1:0]), .y(mux_out[3]));
+    mux4to1 final (.data(mux_out), .sel(sel[3:2]), .y(y));
+endmodule </s>"
+"<s>[INST] Create Verilog code for an I2C controller with master functionality. [/INST] module i2c_master (input wire clk, reset, input wire start, input wire [7:0] data, output reg scl, sda);
+    reg [3:0] state;
+    parameter IDLE = 0, START = 1, WRITE = 2, STOP = 3;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state <= IDLE;
+            scl <= 1;
+            sda <= 1;
+        end else begin
+            case (state)
+                IDLE: if (start) state <= START;
+                START: begin
+                    sda <= 0;
+                    state <= WRITE;
+                end
+                WRITE: begin
+                    scl <= 0;
+                    sda <= data[7]; // MSB first
+                    state <= STOP;
+                end
+                STOP: begin
+                    scl <= 1;
+                    sda <= 1;
+                    state <= IDLE;
+                end
+            endcase
+        end
+    end
+endmodule </s>"
+"<s>[INST] Design Verilog code for a UART transmitter. [/INST] module uart_tx (input wire clk, reset, input wire [7:0] data_in, input wire send, output reg tx);
+    reg [3:0] bit_counter;
+    reg [9:0] shift_reg;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            bit_counter <= 0;
+            shift_reg <= 10'b1111111111;
+            tx <= 1;
+        end else if (send) begin
+            shift_reg <= {1'b1, data_in, 1'b0}; // Start, data, stop
+            bit_counter <= 10;
+        end else if (bit_counter > 0) begin
+            tx <= shift_reg[0];
+            shift_reg <= shift_reg >> 1;
+            bit_counter <= bit_counter - 1;
+        end
+    end
+endmodule </s>"
+"<s>[INST] Generate Verilog code for a clock enable circuit. [/INST] module clock_enable (input wire clk, enable, output reg clk_out);
+    always @(posedge clk) begin
+        if (enable)
+            clk_out <= clk;
+        else
+            clk_out <= 0;
+    end
+endmodule </s>"
+"<s>[INST] Write Verilog code for a multi-bit priority arbiter. [/INST] module priority_arbiter (input wire [7:0] req, output reg [2:0] grant);
+    always @(*) begin
+        casez (req)
+            8'b1???????: grant = 3'd7;
+            8'b01??????: grant = 3'd6;
+            8'b001?????: grant = 3'd5;
+            8'b0001????: grant = 3'd4;
+            8'b00001???: grant = 3'd3;
+            8'b000001??: grant = 3'd2;
+            8'b0000001?: grant = 3'd1;
+            8'b00000001: grant = 3'd0;
+            default: grant = 3'dx;
+        endcase
+    end
+endmodule </s>"
+"<s>[INST] Design Verilog code for an 8-bit parallel-to-serial converter. [/INST] module parallel_to_serial (input wire clk, reset, input wire [7:0] parallel_in, output reg serial_out);
+    reg [7:0] shift_reg;
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            shift_reg <= 8'b0;
+        else
+            shift_reg <= {shift_reg[6:0], parallel_in[0]};
+    end
+    assign serial_out = shift_reg[7];
+endmodule </s>"
+"<s>[INST] Create Verilog code for an SPI slave controller. [/INST] module spi_slave (input wire clk, mosi, cs, output reg miso, input wire [7:0] data_in, output reg [7:0] data_out);
+    reg [2:0] bit_counter;
+    always @(posedge clk or posedge cs) begin
+        if (cs) begin
+            bit_counter <= 3'd0;
+            data_out <= data_in;
+        end else if (!cs) begin
+            data_out <= {data_out[6:0], mosi};
+            bit_counter <= bit_counter + 1;
+            miso <= data_out[7];
+        end
+    end
+endmodule </s>"
+"<s>[INST] Write Verilog code for a traffic light controller with pedestrian crossing. [/INST] module traffic_light_pedestrian (input wire clk, reset, ped_button, output reg [2:0] main_light, ped_light);
+    reg [1:0] state;
+    parameter MAIN_GREEN = 0, MAIN_YELLOW = 1, PED_GREEN = 2;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state <= MAIN_GREEN;
+            main_light <= 3'b100;
+            ped_light <= 3'b001;
+        end else begin
+            case (state)
+                MAIN_GREEN: if (ped_button) state <= MAIN_YELLOW;
+                MAIN_YELLOW: state <= PED_GREEN;
+                PED_GREEN: state <= MAIN_GREEN;
+            endcase
+        end
+    end
+endmodule </s>"
+"<s>[INST] Generate Verilog code for a synchronous FIFO with parameterized depth. [/INST] module sync_fifo #(parameter DEPTH = 16) (input wire clk, reset, we, re, input wire [7:0] data_in, output reg [7:0] data_out);
+    reg [7:0] fifo_mem [DEPTH-1:0];
+    reg [4:0] wr_ptr, rd_ptr;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            wr_ptr <= 0;
+            rd_ptr <= 0;
+        end else if (we & ~re)
+            fifo_mem[wr_ptr] <= data_in;
+            wr_ptr <= wr_ptr + 1;
+        else if (re & ~we)
+            data_out <= fifo_mem[rd_ptr];
+            rd_ptr <= rd_ptr + 1;
+    end
+endmodule </s>"
+"<s>[INST]Generate a verilog code for  Parameterized synchronous RAM with configurable data width and depth[/INST]
+module ram #(
+    parameter DATA_WIDTH = 16,
+    parameter DEPTH = 16,
+    parameter ADDR_WIDTH = $clog2(DEPTH)
+) (
+    input wire clk, we,
+    input wire [ADDR_WIDTH-1:0] addr,
+    input wire [DATA_WIDTH-1:0] data_in,
+    output reg [DATA_WIDTH-1:0] data_out
+);
+    reg [DATA_WIDTH-1:0] mem [DEPTH-1:0];
+    always @(posedge clk) begin
+        if (we)
+            mem[addr] <= data_in;
+        data_out <= mem[addr];
+    end
+endmodule
+</s>"
+"<s>[INST]Generate a verilog code for axi_stream_fifo - AXI-Stream FIFO with parameterized data width and depth[/INST]
+module axi_stream_fifo #(
+    parameter DATA_WIDTH = 8,
+    parameter DEPTH = 16,
+    parameter ADDR_WIDTH = $clog2(DEPTH)
+) (
+    input wire clk, reset,
+    input wire [DATA_WIDTH-1:0] s_axis_tdata,
+    input wire s_axis_tvalid,
+    output reg s_axis_tready,
+    output reg [DATA_WIDTH-1:0] m_axis_tdata,
+    output reg m_axis_tvalid,
+    input wire m_axis_tready
+);
+    reg [DATA_WIDTH-1:0] fifo_mem [DEPTH-1:0];
+    reg [ADDR_WIDTH:0] wr_ptr, rd_ptr;
+    wire full = (wr_ptr[ADDR_WIDTH-1:0] == rd_ptr[ADDR_WIDTH-1:0]) && (wr_ptr[ADDR_WIDTH] != rd_ptr[ADDR_WIDTH]);
+    wire empty = (wr_ptr == rd_ptr);
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            wr_ptr <= 0; rd_ptr <= 0;
+            s_axis_tready <= 1; m_axis_tvalid <= 0;
+        end else begin
+            if (s_axis_tvalid && s_axis_tready && !full) begin
+                fifo_mem[wr_ptr[ADDR_WIDTH-1:0]] <= s_axis_tdata;
+                wr_ptr <= wr_ptr + 1;
+            end
+            if (m_axis_tready && m_axis_tvalid && !empty) begin
+                m_axis_tdata <= fifo_mem[rd_ptr[ADDR_WIDTH-1:0]];
+                rd_ptr <= rd_ptr + 1;
+            end
+            s_axis_tready <= !full;
+            m_axis_tvalid <= !empty;
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]Generate a Verilog code for cdc_synchronizer - Multi-stage synchronizer for clock domain crossing[/INST]
+module cdc_synchronizer #(
+    parameter WIDTH = 1,
+    parameter STAGES = 2
+) (
+    input wire clk,
+    input wire [WIDTH-1:0] async_in,
+    output reg [WIDTH-1:0] sync_out
+);
+    reg [WIDTH-1:0] sync_reg [STAGES-1:0];
+    integer i;
+    always @(posedge clk) begin
+        sync_reg[0] <= async_in;
+        for (i = 1; i < STAGES; i = i + 1)
+            sync_reg[i] <= sync_reg[i-1];
+        sync_out <= sync_reg[STAGES-1];
+    end
+endmodule
+</s>"
+"<s>[INST]Generate a verilog code for pipelined_multiplier - Pipelined multiplier with configurable stages and width[/INST]
+module pipelined_multiplier #(
+    parameter WIDTH = 8,
+    parameter PIPE_STAGES = 2
+) (
+    input wire clk, reset,
+    input wire [WIDTH-1:0] a, b,
+    output reg [2*WIDTH-1:0] product
+);
+    reg [2*WIDTH-1:0] pipe_reg [PIPE_STAGES-1:0];
+    integer i;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            for (i = 0; i < PIPE_STAGES; i = i + 1)
+                pipe_reg[i] <= 0;
+            product <= 0;
+        end else begin
+            pipe_reg[0] <= a * b;
+            for (i = 1; i < PIPE_STAGES; i = i + 1)
+                pipe_reg[i] <= pipe_reg[i-1];
+            product <= pipe_reg[PIPE_STAGES-1];
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]Generate a verilog code for sync_fifo_with_status - Synchronous FIFO with full/empty status flags[/INST]
+module sync_fifo_with_status #(
+    parameter DATA_WIDTH = 8,
+    parameter DEPTH = 16,
+    parameter ADDR_WIDTH = $clog2(DEPTH)
+) (
+    input wire clk, reset, we, re,
+    input wire [DATA_WIDTH-1:0] data_in,
+    output reg [DATA_WIDTH-1:0] data_out,
+    output wire full, empty
+);
+    reg [DATA_WIDTH-1:0] fifo_mem [DEPTH-1:0];
+    reg [ADDR_WIDTH:0] wr_ptr, rd_ptr;
+    assign full = (wr_ptr[ADDR_WIDTH-1:0] == rd_ptr[ADDR_WIDTH-1:0]) && (wr_ptr[ADDR_WIDTH] != rd_ptr[ADDR_WIDTH]);
+    assign empty = (wr_ptr == rd_ptr);
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            wr_ptr <= 0; rd_ptr <= 0;
+            data_out <= 0;
+        end else begin
+            if (we && !full) begin
+                fifo_mem[wr_ptr[ADDR_WIDTH-1:0]] <= data_in;
+                wr_ptr <= wr_ptr + 1;
+            end
+            if (re && !empty) begin
+                data_out <= fifo_mem[rd_ptr[ADDR_WIDTH-1:0]];
+                rd_ptr <= rd_ptr + 1;
+            end
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]Generate a verilog code for testbench of d_flip_flop - Testbench for D flip-flop with stimulus and monitoring[/INST]
+module tb_d_flip_flop;
+    reg clk, reset, d;
+    wire q;
+    d_flip_flop uut (.clk(clk), .reset(reset), .d(d), .q(q));
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+    initial begin
+        $monitor(""t=%0t: reset=%b, d=%b, q=%b"", $time, reset, d, q);
+        reset = 1; d = 0; #10;
+        reset = 0; d = 1; #10;
+        d = 0; #10;
+        d = 1; #10;
+        reset = 1; #10;
+        $finish;
+    end
+endmodule
+module d_flip_flop (
+    input wire clk, reset, d,
+    output reg q
+);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            q <= 0;
+        else
+            q <= d;
+    end
+endmodule
+</s>"
+"<s>[INST]Generate a verilog code for axi4_lite_master - AXI4-Lite master for memory-mapped communication[/INST]
+module axi4_lite_master #(
+    parameter DATA_WIDTH = 32,
+    parameter ADDR_WIDTH = 32
+) (
+    input wire clk, reset,
+    output reg [ADDR_WIDTH-1:0] awaddr,
+    output reg awvalid,
+    input wire awready,
+    output reg [DATA_WIDTH-1:0] wdata,
+    output reg wvalid,
+    input wire wready,
+    input wire bvalid,
+    output reg bready,
+    output reg [ADDR_WIDTH-1:0] araddr,
+    output reg arvalid,
+    input wire arready,
+    input wire [DATA_WIDTH-1:0] rdata,
+    input wire rvalid,
+    output reg rready
+);
+    reg [2:0] state;
+    parameter IDLE = 0, ADDR = 1, DATA = 2;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state <= IDLE;
+            awvalid <= 0; wvalid <= 0; bready <= 0;
+            arvalid <= 0; rready <= 0;
+        end else begin
+            case (state)
+                IDLE: begin
+                    awvalid <= 1; arvalid <= 1;
+                    state <= ADDR;
+                end
+                ADDR: begin
+                    if (awready) awvalid <= 0;
+                    if (arready) arvalid <= 0;
+                    if (awready || arready) begin
+                        wvalid <= 1; rready <= 1;
+                        state <= DATA;
+                    end
+                end
+                DATA: begin
+                    if (wready) wvalid <= 0;
+                    if (rvalid) rready <= 0;
+                    if (wready || rvalid) state <= IDLE;
+                end
+            endcase
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]Generate a verilog code for power_aware_counter - Counter with clock gating for power efficiency[/INST]
+module power_aware_counter #(
+    parameter WIDTH = 4
+) (
+    input wire clk, reset, enable, power_down,
+    output reg [WIDTH-1:0] count
+);
+    wire gated_clk;
+    clock_gating cg (.clk(clk), .enable(enable & ~power_down), .gated_clk(gated_clk));
+    always @(posedge gated_clk or posedge reset) begin
+        if (reset)
+            count <= 0;
+        else if (enable)
+            count <= count + 1;
+    end
+endmodule
+module clock_gating (
+    input wire clk, enable,
+    output wire gated_clk
+);
+    assign gated_clk = clk & enable;
+endmodule
+</s>"
+"<s>[INST]Generate a verilog code for ram_fpga_asic - RAM optimized for FPGA or ASIC with conditional compilation[/INST]
+module ram_fpga_asic #(
+    parameter DATA_WIDTH = 16,
+    parameter DEPTH = 16,
+    parameter ADDR_WIDTH = $clog2(DEPTH)
+) (
+    input wire clk, we,
+    input wire [ADDR_WIDTH-1:0] addr,
+    input wire [DATA_WIDTH-1:0] data_in,
+    output reg [DATA_WIDTH-1:0] data_out
+);
+`ifdef FPGA
+    reg [DATA_WIDTH-1:0] mem [DEPTH-1:0];
+    always @(posedge clk) begin
+        if (we)
+            mem[addr] <= data_in;
+        data_out <= mem[addr];
+    end
+`else
+    reg [DATA_WIDTH-1:0] mem [DEPTH-1:0];
+    always @(posedge clk) begin
+        if (we)
+            mem[addr] <= data_in;
+        data_out <= mem[addr];
+    end
+endmodule
+</s>"
+"<s>[INST]Generate a verilog code for simple_risc_processor - Hierarchical RISC processor with ALU and register file[/INST]
+module simple_risc_processor #(
+    parameter DATA_WIDTH = 32,
+    parameter ADDR_WIDTH = 4
+) (
+    input wire clk, reset,
+    input wire [DATA_WIDTH-1:0] instr,
+    output wire [DATA_WIDTH-1:0] result
+);
+    wire [DATA_WIDTH-1:0] reg_data_in, reg_data_out;
+    wire [ADDR_WIDTH-1:0] reg_addr;
+    wire reg_we;
+    wire [DATA_WIDTH-1:0] alu_result;
+    wire [3:0] alu_opcode;
+    register_file #(.DATA_WIDTH(DATA_WIDTH), .ADDR_WIDTH(ADDR_WIDTH)) rf (
+        .clk(clk), .reset(reset), .we(reg_we),
+        .addr(reg_addr), .data_in(reg_data_in), .data_out(reg_data_out)
+    );
+    alu32 #(.WIDTH(DATA_WIDTH)) alu (
+        .a(reg_data_out), .b(instr[DATA_WIDTH-1:0]), .opcode(alu_opcode),
+        .result(alu_result)
+    );
+    reg [1:0] state;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state <= 0;
+            reg_we <= 0;
+        end else begin
+            reg_we <= (state == 2);
+            alu_opcode <= instr[3:0];
+            reg_addr <= instr[7:4];
+            state <= state + 1;
+        end
+    end
+    assign result = alu_result;
+    assign reg_data_in = alu_result;
+endmodule
+module register_file #(
+    parameter DATA_WIDTH = 32,
+    parameter ADDR_WIDTH = 4
+) (
+    input wire clk, reset, we,
+    input wire [ADDR_WIDTH-1:0] addr,
+    input wire [DATA_WIDTH-1:0] data_in,
+    output reg [DATA_WIDTH-1:0] data_out
+);
+    reg [DATA_WIDTH-1:0] reg_file [2**ADDR_WIDTH-1:0];
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            integer i;
+            for (i = 0; i < 2**ADDR_WIDTH; i = i + 1)
+                reg_file[i] <= 0;
+        end else if (we) begin
+            reg_file[addr] <= data_in;
+        end
+        data_out <= reg_file[addr];
+    end
+endmodule
+module alu32 #(
+    parameter WIDTH = 32
+) (
+    input wire [WIDTH-1:0] a, b,
+    input wire [3:0] opcode,
+    output reg [WIDTH-1:0] result
+);
+    always @(*) begin
+        case (opcode)
+            4'b0000: result = a + b;
+            4'b0001: result = a - b;
+            4'b0010: result = a & b;
+            4'b0011: result = a | b;
+            4'b0100: result = a ^ b;
+            4'b0101: result = a << b;
+            4'b0110: result = a >> b;
+            default: result = 0;
+        endcase
+    end
+endmodule
+</s>"
+"<s>[INST]Generate a verilog code for dma_controller - Parameterized DMA controller for high-speed data transfers[/INST]
+module dma_controller #(
+    parameter DATA_WIDTH = 32,
+    parameter ADDR_WIDTH = 32,
+    parameter BURST_LEN = 8
+) (
+    input wire clk, reset,
+    input wire start, // Start DMA transfer
+    input wire [ADDR_WIDTH-1:0] src_addr, dst_addr,
+    input wire [DATA_WIDTH-1:0] data_in,
+    output reg [DATA_WIDTH-1:0] data_out,
+    output reg [ADDR_WIDTH-1:0] mem_addr,
+    output reg mem_we, mem_re,
+    output reg done // Transfer complete
+);
+    reg [2:0] state;
+    reg [BURST_LEN-1:0] count;
+    parameter IDLE = 0, READ = 1, WRITE = 2, DONE = 3;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state <= IDLE;
+            done <= 0;
+            mem_we <= 0;
+            mem_re <= 0;
+            count <= 0;
+        end else begin
+            case (state)
+                IDLE: if (start) begin
+                    state <= READ;
+                    mem_addr <= src_addr;
+                    mem_re <= 1;
+                    count <= 0;
+                end
+                READ: if (count < BURST_LEN) begin
+                    data_out <= data_in;
+                    mem_addr <= mem_addr + 1;
+                    count <= count + 1;
+                end else begin
+                    state <= WRITE;
+                    mem_addr <= dst_addr;
+                    mem_we <= 1;
+                    mem_re <= 0;
+                    count <= 0;
+                end
+                WRITE: if (count < BURST_LEN) begin
+                    mem_addr <= mem_addr + 1;
+                    count <= count + 1;
+                end else begin
+                    state <= DONE;
+                    mem_we <= 0;
+                    done <= 1;
+                end
+                DONE: begin
+                    done <= 0;
+                    state <= IDLE;
+                end
+            endcase
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]Generate a verilog code for interrupt_controller - Manages multiple interrupt sources with prioritization[/INST]
+module interrupt_controller #(
+    parameter NUM_INTERRUPTS = 8,
+    parameter PRIORITY_WIDTH = 3
+) (
+    input wire clk, reset,
+    input wire [NUM_INTERRUPTS-1:0] interrupt_req,
+    output reg [PRIORITY_WIDTH-1:0] interrupt_id,
+    output reg interrupt_valid
+);
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            interrupt_id <= 0;
+            interrupt_valid <= 0;
+        end else begin
+            interrupt_valid <= 0;
+            casez (interrupt_req)
+                8'b1???????: begin interrupt_id <= 7; interrupt_valid <= 1; end
+                8'b01??????: begin interrupt_id <= 6; interrupt_valid <= 1; end
+                8'b001?????: begin interrupt_id <= 5; interrupt_valid <= 1; end
+                8'b0001????: begin interrupt_id <= 4; interrupt_valid <= 1; end
+                8'b00001???: begin interrupt_id <= 3; interrupt_valid <= 1; end
+                8'b000001??: begin interrupt_id <= 2; interrupt_valid <= 1; end
+                8'b0000001?: begin interrupt_id <= 1; interrupt_valid <= 1; end
+                8'b00000001: begin interrupt_id <= 0; interrupt_valid <= 1; end
+                default: interrupt_id <= 0;
+            endcase
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]Generate a verilog code for ecc_module - Hamming code ECC for memory data protection[/INST]
+module ecc_module #(
+    parameter DATA_WIDTH = 32,
+    parameter ECC_WIDTH = 6
+) (
+    input wire [DATA_WIDTH-1:0] data_in,
+    output reg [DATA_WIDTH+ECC_WIDTH-1:0] data_out,
+    input wire [DATA_WIDTH+ECC_WIDTH-1:0] data_read,
+    output reg [DATA_WIDTH-1:0] data_corrected,
+    output reg error_detected
+);
+    // Hamming code generation
+    reg [ECC_WIDTH-1:0] ecc_gen;
+    always @(*) begin
+        ecc_gen[0] = ^(data_in & 32'h55555555);
+        ecc_gen[1] = ^(data_in & 32'h33333333);
+        ecc_gen[2] = ^(data_in & 32'h0F0F0F0F);
+        ecc_gen[3] = ^(data_in & 32'h00FF00FF);
+        ecc_gen[4] = ^(data_in & 32'h0000FFFF);
+        ecc_gen[5] = ^(data_in);
+        data_out = {ecc_gen, data_in};
+    end
+    // Error detection and correction
+    reg [ECC_WIDTH-1:0] syndrome;
+    always @(*) begin
+        syndrome[0] = ^(data_read & 64'h5555555555555555);
+        syndrome[1] = ^(data_read & 64'h3333333333333333);
+        syndrome[2] = ^(data_read & 64'h0F0F0F0F0F0F0F0F);
+        syndrome[3] = ^(data_read & 64'h00FF00FF00FF00FF);
+        syndrome[4] = ^(data_read & 64'h0000FFFF0000FFFF);
+        syndrome[5] = ^(data_read);
+        error_detected = |syndrome;
+        data_corrected = data_read[DATA_WIDTH-1:0];
+        if (syndrome != 0)
+            data_corrected[syndrome-1] = ~data_corrected[syndrome-1];
+    end
+endmodule
+</s>"
+"<s>[INST]Generate a verilog code for pll_wrapper - Configurable PLL wrapper for clock generation[/INST]
+module pll_wrapper #(
+    parameter INPUT_FREQ = 50_000_000,
+    parameter OUTPUT_FREQ = 100_000_000
+) (
+    input wire clk_in, reset,
+    output reg clk_out,
+    output reg locked
+);
+    reg [31:0] counter;
+    localparam DIV_RATIO = INPUT_FREQ / OUTPUT_FREQ;
+    always @(posedge clk_in or posedge reset) begin
+        if (reset) begin
+            counter <= 0;
+            clk_out <= 0;
+            locked <= 0;
+        end else begin
+            if (counter == DIV_RATIO / 2 - 1) begin
+                clk_out <= ~clk_out;
+                counter <= 0;
+                locked <= 1;
+            end else begin
+                counter <= counter + 1;
+            end
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]Generate a verilog code for aes_core - AES-128 encryption core for secure data processing[/INST]
+module aes_core #(
+    parameter DATA_WIDTH = 128,
+    parameter KEY_WIDTH = 128
+) (
+    input wire clk, reset, start,
+    input wire [DATA_WIDTH-1:0] plaintext,
+    input wire [KEY_WIDTH-1:0] key,
+    output reg [DATA_WIDTH-1:0] ciphertext,
+    output reg done
+);
+    reg [3:0] round;
+    reg [DATA_WIDTH-1:0] state;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            round <= 0;
+            done <= 0;
+            state <= 0;
+        end else if (start) begin
+            state <= plaintext ^ key; // Simplified initial round
+            round <= 1;
+        end else if (round < 10) begin
+            state <= state ^ key; // Simplified round operation
+            round <= round + 1;
+        end else if (round == 10) begin
+            ciphertext <= state;
+            done <= 1;
+            round <= 0;
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]generate a verilog code for nn_accelerator - Neural network accelerator for matrix multiplication[/INST]
+module nn_accelerator #(
+    parameter DATA_WIDTH = 16,
+    parameter MATRIX_SIZE = 4
+) (
+    input wire clk, reset, start,
+    input wire [DATA_WIDTH-1:0] matrix_a [MATRIX_SIZE-1:0][MATRIX_SIZE-1:0],
+    input wire [DATA_WIDTH-1:0] matrix_b [MATRIX_SIZE-1:0][MATRIX_SIZE-1:0],
+    output reg [DATA_WIDTH*2-1:0] result [MATRIX_SIZE-1:0][MATRIX_SIZE-1:0],
+    output reg done
+);
+    integer i, j, k;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            done <= 0;
+            for (i = 0; i < MATRIX_SIZE; i = i + 1)
+                for (j = 0; j < MATRIX_SIZE; j = j + 1)
+                    result[i][j] <= 0;
+        end else if (start) begin
+            for (i = 0; i < MATRIX_SIZE; i = i + 1)
+                for (j = 0; j < MATRIX_SIZE; j = j + 1) begin
+                    result[i][j] <= 0;
+                    for (k = 0; k < MATRIX_SIZE; k = k + 1)
+                        result[i][j] <= result[i][j] + matrix_a[i][k] * matrix_b[k][j];
+                end
+            done <= 1;
+        end else begin
+            done <= 0;
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]bist_module - Built-in self-test for memory testing[/INST]
+module bist_module #(
+    parameter DATA_WIDTH = 16,
+    parameter ADDR_WIDTH = 8
+) (
+    input wire clk, reset, start,
+    output reg [ADDR_WIDTH-1:0] addr,
+    output reg [DATA_WIDTH-1:0] data_out,
+    input wire [DATA_WIDTH-1:0] data_in,
+    output reg test_passed,
+    output reg done
+);
+    reg [1:0] state;
+    parameter IDLE = 0, WRITE = 1, READ = 2;
+    reg [ADDR_WIDTH-1:0] test_addr;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state <= IDLE;
+            done <= 0;
+            test_passed <= 0;
+            test_addr <= 0;
+        end else begin
+            case (state)
+                IDLE: if (start) begin
+                    state <= WRITE;
+                    addr <= 0;
+                    data_out <= 16'hAAAA;
+                end
+                WRITE: if (test_addr < 2**ADDR_WIDTH-1) begin
+                    test_addr <= test_addr + 1;
+                    addr <= test_addr + 1;
+                end else begin
+                    state <= READ;
+                    test_addr <= 0;
+                    addr <= 0;
+                end
+                READ: if (test_addr < 2**ADDR_WIDTH-1) begin
+                    test_addr <= test_addr + 1;
+                    addr <= test_addr + 1;
+                    test_passed <= (data_in == 16'hAAAA);
+                end else begin
+                    state <= IDLE;
+                    done <= 1;
+                end
+            endcase
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]handshake_synchronizer - CDC handshake for control signal transfer[/INST]
+module handshake_synchronizer (
+    input wire src_clk, src_reset, src_valid,
+    output reg src_ready,
+    input wire dst_clk, dst_reset,
+    output reg dst_valid,
+    input wire dst_ready
+);
+    reg src_toggle, dst_toggle;
+    reg [1:0] src_sync, dst_sync;
+    always @(posedge src_clk or posedge src_reset) begin
+        if (src_reset) begin
+            src_toggle <= 0;
+            src_ready <= 0;
+            src_sync <= 0;
+        end else begin
+            src_sync <= {src_sync[0], dst_toggle};
+            if (src_valid && !src_ready)
+                src_toggle <= ~src_toggle;
+            src_ready <= (src_sync[1] == dst_toggle);
+        end
+    end
+    always @(posedge dst_clk or posedge dst_reset) begin
+        if (dst_reset) begin
+            dst_toggle <= 0;
+            dst_valid <= 0;
+            dst_sync <= 0;
+        end else begin
+            dst_sync <= {dst_sync[0], src_toggle};
+            dst_valid <= (dst_sync[1] != dst_toggle);
+            if (dst_valid && dst_ready)
+                dst_toggle <= dst_sync[1];
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]axi4_full_master - AXI4-Full master for high-performance communication[/INST]
+module axi4_full_master #(
+    parameter DATA_WIDTH = 64,
+    parameter ADDR_WIDTH = 32,
+    parameter BURST_LEN = 8
+) (
+    input wire clk, reset,
+    output reg [ADDR_WIDTH-1:0] awaddr,
+    output reg [7:0] awlen,
+    output reg awvalid,
+    input wire awready,
+    output reg [DATA_WIDTH-1:0] wdata,
+    output reg wlast,
+    output reg wvalid,
+    input wire wready,
+    input wire bvalid,
+    output reg bready,
+    output reg [ADDR_WIDTH-1:0] araddr,
+    output reg [7:0] arlen,
+    output reg arvalid,
+    input wire arready,
+    input wire [DATA_WIDTH-1:0] rdata,
+    input wire rlast,
+    input wire rvalid,
+    output reg rready
+);
+    reg [2:0] state;
+    parameter IDLE = 0, WRITE_ADDR = 1, WRITE_DATA = 2, READ_ADDR = 3, READ_DATA = 4;
+    reg [7:0] burst_count;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state <= IDLE;
+            awvalid <= 0; wvalid <= 0; bready <= 0;
+            arvalid <= 0; rready <= 0;
+            burst_count <= 0;
+        end else begin
+            case (state)
+                IDLE: begin
+                    awvalid <= 1;
+                    awlen <= BURST_LEN - 1;
+                    state <= WRITE_ADDR;
+                end
+                WRITE_ADDR: if (awready) begin
+                    awvalid <= 0;
+                    wvalid <= 1;
+                    state <= WRITE_DATA;
+                end
+                WRITE_DATA: if (wready) begin
+                    burst_count <= burst_count + 1;
+                    wlast <= (burst_count == BURST_LEN - 1);
+                    if (wlast) begin
+                        wvalid <= 0;
+                        bready <= 1;
+                        state <= IDLE;
+                        burst_count <= 0;
+                    end
+                end
+                READ_ADDR: if (arready) begin
+                    arvalid <= 0;
+                    rready <= 1;
+                    state <= READ_DATA;
+                end
+                READ_DATA: if (rvalid) begin
+                    burst_count <= burst_count + 1;
+                    if (rlast) begin
+                        rready <= 0;
+                        state <= IDLE;
+                        burst_count <= 0;
+                    end
+                end
+            endcase
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]dsp_pipeline - Pipelined DSP chain for signal processing[/INST]
+module dsp_pipeline #(
+    parameter DATA_WIDTH = 16,
+    parameter PIPE_STAGES = 3
+) (
+    input wire clk, reset,
+    input wire [DATA_WIDTH-1:0] data_in,
+    output reg [DATA_WIDTH-1:0] data_out
+);
+    reg [DATA_WIDTH-1:0] pipe_reg [PIPE_STAGES-1:0];
+    integer i;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            for (i = 0; i < PIPE_STAGES; i = i + 1)
+                pipe_reg[i] <= 0;
+            data_out <= 0;
+        end else begin
+            pipe_reg[0] <= data_in * 2; // Example: multiply by 2
+            for (i = 1; i < PIPE_STAGES; i = i + 1)
+                pipe_reg[i] <= pipe_reg[i-1] + 1; // Example: increment
+            data_out <= pipe_reg[PIPE_STAGES-1];
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]axi_interconnect - AXI interconnect for multi-master/slave communication[/INST]
+module axi_interconnect #(
+    parameter NUM_MASTERS = 4,
+    parameter NUM_SLAVES = 4,
+    parameter DATA_WIDTH = 64,
+    parameter ADDR_WIDTH = 32
+) (
+    input wire clk, reset,
+    // Master interfaces
+    input wire [NUM_MASTERS-1:0][ADDR_WIDTH-1:0] m_awaddr,
+    input wire [NUM_MASTERS-1:0] m_awvalid,
+    output reg [NUM_MASTERS-1:0] m_awready,
+    input wire [NUM_MASTERS-1:0][DATA_WIDTH-1:0] m_wdata,
+    input wire [NUM_MASTERS-1:0] m_wvalid,
+    output reg [NUM_MASTERS-1:0] m_wready,
+    output reg [NUM_MASTERS-1:0] m_bvalid,
+    input wire [NUM_MASTERS-1:0] m_bready,
+    // Slave interfaces
+    output reg [NUM_SLAVES-1:0][ADDR_WIDTH-1:0] s_awaddr,
+    output reg [NUM_SLAVES-1:0] s_awvalid,
+    input wire [NUM_SLAVES-1:0] s_awready,
+    output reg [NUM_SLAVES-1:0][DATA_WIDTH-1:0] s_wdata,
+    output reg [NUM_SLAVES-1:0] s_wvalid,
+    input wire [NUM_SLAVES-1:0] s_wready,
+    input wire [NUM_SLAVES-1:0] s_bvalid,
+    output reg [NUM_SLAVES-1:0] s_bready
+);
+    reg [NUM_MASTERS-1:0][NUM_SLAVES-1:0] arb_grant;
+    integer i, j;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            for (i = 0; i < NUM_MASTERS; i = i + 1)
+                for (j = 0; j < NUM_SLAVES; j = j + 1)
+                    arb_grant[i][j] <= 0;
+            m_awready <= 0;
+            m_wready <= 0;
+            m_bvalid <= 0;
+            s_awvalid <= 0;
+            s_wvalid <= 0;
+            s_bready <= 0;
+        end else begin
+            // Arbitration logic
+            for (i = 0; i < NUM_MASTERS; i = i + 1) begin
+                for (j = 0; j < NUM_SLAVES; j = j + 1) begin
+                    if (m_awvalid[i] && s_awready[j] && !arb_grant[i][j]) begin
+                        arb_grant[i][j] <= 1;
+                        s_awaddr[j] <= m_awaddr[i];
+                        s_awvalid[j] <= 1;
+                        m_awready[i] <= 1;
+                    end
+                    if (m_wvalid[i] && s_wready[j] && arb_grant[i][j]) begin
+                        s_wdata[j] <= m_wdata[i];
+                        s_wvalid[j] <= 1;
+                        m_wready[i] <= 1;
+                    end
+                    if (s_bvalid[j] && arb_grant[i][j]) begin
+                        m_bvalid[i] <= 1;
+                        s_bready[j] <= m_bready[i];
+                    end
+                end
+            end
+            // Clear grants when transaction completes
+            for (i = 0; i < NUM_MASTERS; i = i + 1)
+                for (j = 0; j < NUM_SLAVES; j = j + 1)
+                    if (m_bvalid[i] && m_bready[i])
+                        arb_grant[i][j] <= 0;
+        end
+    end
+endmodule
+</s>"
+"<s>[INST] Generate a Verilog module with the following description: LSHIFT2 module with input and output.[/INST]
+module LSHIFT2 #(parameter SIZE = 2)(input [SIZE-1:0] in, 
+    input [SIZE-1:0] shift, input val,
+    output reg [SIZE-1:0] out);
+
+always @(in or shift or val) begin
+    out = in << shift;
+	if(val)
+	    out = out | ({SIZE-1 {1'b1} } >> (SIZE-1-shift));
+end	
+endmodule </s>"
+"<s>[INST] Generate a Verilog module with the following description: D flip-flop with asynchronous set.
+[/INST]
+module SFF(input d, clk, set, output reg q);
+always @(posedge clk or posedge set)
+    if(set)
+	    q <= 1;
+	else
+	    q <= d;
+endmodule </s>"
+"<s>[INST] Generate a Verilog module with the following description: Flip-flop with set and reset.
+[/INST]
+module RSFF(input d, clk, set, reset, output reg q);
+always @(posedge clk or posedge reset or posedge set)
+    if(reset)
+	    q <= 0;
+	else if(set)
+	    q <= 1;
+	else
+	    q <= d;
+endmodule </s>"
+"<s>[INST] Generate a Verilog module with the following description: SR flip-flop module with asynchronous set and reset.
+[/INST]
+module SRFF(input d, clk, set, reset, output reg q);
+always @(posedge clk or posedge set or posedge reset)
+    if(set)
+	    q <= 1;
+	else if(reset)
+	    q <= 0;
+	else
+	    q <= d;
+endmodule </s>"
+"<s>[INST] Generate a Verilog module with the following description: LATCH module with enable control.
+[/INST]
+module LATCH(input d, enable, output reg q);
+always @( d or enable)
+    if(enable)
+	    q <= d;
+endmodule </s>"
+"<s>[INST] Generate a Verilog module with the following description: RLATCH module with input d, reset, enable, and output reg q, with conditional assignment.
+[/INST]
+module RLATCH(input d, reset, enable, output reg q);
+always @( d or enable or reset)
+    if(enable)
+	    if(reset)
+		    q <= 0;
+		else	
+	        q <= d;
+endmodule </s>"
+"<s>[INST] Generate a Verilog module with the following description: Conditional shift register module with parameter.[/INST]
+module LSHIFT1 #(parameter SIZE = 1)(input in, shift, val, output reg out);
+
+always @ (in, shift, val) begin
+    if(shift)
+	    out = val;
+	else 
+	    out = in;
+end
+
+endmodule </s>"
+"<s>[INST] Generate a Verilog module with the following description: Comparing two inputs with output.[/INST]
+module CMP8 #(parameter SIZE = 8) (input [SIZE-1:0] in1, in2, 
+    output reg equal, unequal, greater, lesser);
+
+always @ (in1 or in2) begin
+    if(in1 == in2) begin
+	    equal = 1;
+		unequal = 0;
+		greater = 0;
+		lesser = 0;
+	end	
+	else begin
+	    equal = 0;
+		unequal = 1;
+
+	    if(in1 < in2) begin
+		    greater = 0;
+		    lesser = 1;
+	    end	
+	    else begin
+		    greater = 1;
+		    lesser = 0;
+	    end	
+	end	
+end
+endmodule </s>"
+"<s>[INST] Generate a Verilog module with the following description: Comparison module with four outputs.[/INST]
+module CMP16 #(parameter SIZE = 16) (input [SIZE-1:0] in1, in2, 
+    output reg equal, unequal, greater, lesser);
+
+always @ (in1 or in2) begin
+    if(in1 == in2) begin
+	    equal = 1;
+		unequal = 0;
+		greater = 0;
+		lesser = 0;
+	end	
+	else begin
+	    equal = 0;
+		unequal = 1;
+
+	    if(in1 < in2) begin
+		    greater = 0;
+		    lesser = 1;
+	    end	
+	    else begin
+		    greater = 1;
+		    lesser = 0;
+	    end	
+	end	
+end
+endmodule </s>"
+"<s>[INST] Generate a Verilog module with the following description: 32-bit comparator module with four outputs[/INST]
+module CMP32 #(parameter SIZE = 32) (input [SIZE-1:0] in1, in2, 
+    output reg equal, unequal, greater, lesser);
+
+always @ (in1 or in2) begin
+    if(in1 == in2) begin
+	    equal = 1;
+		unequal = 0;
+		greater = 0;
+		lesser = 0;
+	end	
+	else begin
+	    equal = 0;
+		unequal = 1;
+
+	    if(in1 < in2) begin
+		    greater = 0;
+		    lesser = 1;
+	    end	
+	    else begin
+		    greater = 1;
+		    lesser = 0;
+	    end	
+	end	
+end
+endmodule </s>"
+"<s>[INST] Generate a Verilog module with the following description: Comparing two 64-bit inputs.[/INST]
+module CMP64 #(parameter SIZE = 64) (input [SIZE-1:0] in1, in2, 
+    output reg equal, unequal, greater, lesser);
+
+always @ (in1 or in2) begin
+    if(in1 == in2) begin
+	    equal = 1;
+		unequal = 0;
+		greater = 0;
+		lesser = 0;
+	end	
+	else begin
+	    equal = 0;
+		unequal = 1;
+
+	    if(in1 < in2) begin
+		    greater = 0;
+		    lesser = 1;
+	    end	
+	    else begin
+		    greater = 1;
+		    lesser = 0;
+	    end	
+	end	
+end
+endmodule </s>"
+"<s>[INST]pcie_controller - PCIe endpoint controller for high-speed interfacing[/INST]
+module pcie_controller #(
+    parameter DATA_WIDTH = 128,
+    parameter LANES = 4
+) (
+    input wire clk, reset, start,
+    input wire [DATA_WIDTH-1:0] data_in,
+    output reg [DATA_WIDTH-1:0] data_out,
+    output reg done
+);
+    reg [2:0] state;
+    parameter IDLE = 0, TRANSFER = 1, COMPLETE = 2;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state <= IDLE;
+            data_out <= 0;
+            done <= 0;
+        end else begin
+            case (state)
+                IDLE: if (start) begin
+                    state <= TRANSFER;
+                    data_out <= data_in;
+                end
+                TRANSFER: begin
+                    state <= COMPLETE; // Simplified PCIe transaction
+                end
+                COMPLETE: begin
+                    done <= 1;
+                    state <= IDLE;
+                end
+            endcase
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]ethernet_mac - Ethernet MAC for network communication[/INST]
+module ethernet_mac #(
+    parameter DATA_WIDTH = 32
+) (
+    input wire clk, reset,
+    input wire [DATA_WIDTH-1:0] tx_data,
+    input wire tx_valid,
+    output reg tx_ready,
+    output reg [DATA_WIDTH-1:0] rx_data,
+    output reg rx_valid,
+    input wire rx_ready
+);
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            tx_ready <= 0;
+            rx_data <= 0;
+            rx_valid <= 0;
+        end else begin
+            tx_ready <= 1; // Simplified Ethernet frame handling
+            if (tx_valid && tx_ready)
+                rx_data <= tx_data;
+            rx_valid <= tx_valid;
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]usb_controller - USB 2.0 controller for peripheral interfacing[/INST]
+module usb_controller #(
+    parameter DATA_WIDTH = 16
+) (
+    input wire clk, reset, start,
+    input wire [DATA_WIDTH-1:0] data_in,
+    output reg [DATA_WIDTH-1:0] data_out,
+    output reg done
+);
+    reg [1:0] state;
+    parameter IDLE = 0, TRANSFER = 1;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state <= IDLE;
+            data_out <= 0;
+            done <= 0;
+        end else if (start) begin
+            state <= TRANSFER;
+            data_out <= data_in; // Simplified USB packet handling
+            done <= 1;
+            state <= IDLE;
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]sha256_core - SHA-256 cryptographic hash core[/INST]
+module sha256_core #(
+    parameter DATA_WIDTH = 256
+) (
+    input wire clk, reset, start,
+    input wire [DATA_WIDTH-1:0] data_in,
+    output reg [255:0] hash,
+    output reg done
+);
+    reg [3:0] round;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            round <= 0;
+            hash <= 0;
+            done <= 0;
+        end else if (start) begin
+            hash <= data_in; // Simplified SHA-256 rounds
+            round <= round + 1;
+            if (round == 8) begin
+                done <= 1;
+                round <= 0;
+            end
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]fft_processor - Fast Fourier Transform processor for DSP[/INST]
+module fft_processor #(
+    parameter DATA_WIDTH = 16,
+    parameter POINTS = 64
+) (
+    input wire clk, reset, start,
+    input wire [DATA_WIDTH-1:0] data_in,
+    output reg [DATA_WIDTH-1:0] data_out,
+    output reg done
+);
+    reg [5:0] stage;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            stage <= 0;
+            data_out <= 0;
+            done <= 0;
+        end else if (start) begin
+            data_out <= data_in; // Simplified FFT butterfly
+            stage <= stage + 1;
+            if (stage == POINTS-1)
+                done <= 1;
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]adc_wrapper - Analog-to-digital converter interface wrapper[/INST]
+module adc_wrapper #(
+    parameter DATA_WIDTH = 12
+) (
+    input wire clk, reset,
+    input wire analog_in,
+    output reg [DATA_WIDTH-1:0] digital_out
+);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            digital_out <= 0;
+        else
+            digital_out <= analog_in ? 12'hFFF : 12'h000; // Simplified ADC sampling
+    end
+endmodule
+</s>"
+"<s>[INST]noc_router - Network-on-Chip router for multi-core systems[/INST]
+module noc_router #(
+    parameter DATA_WIDTH = 32,
+    parameter NUM_PORTS = 5
+) (
+    input wire clk, reset,
+    input wire [DATA_WIDTH-1:0] data_in [NUM_PORTS-1:0],
+    input wire [NUM_PORTS-1:0] valid_in,
+    output reg [NUM_PORTS-1:0] ready_out,
+    output reg [DATA_WIDTH-1:0] data_out [NUM_PORTS-1:0],
+    output reg [NUM_PORTS-1:0] valid_out
+);
+    integer i;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            for (i = 0; i < NUM_PORTS; i = i + 1) begin
+                data_out[i] <= 0;
+                valid_out[i] <= 0;
+                ready_out[i] <= 0;
+            end
+        end else begin
+            for (i = 0; i < NUM_PORTS; i = i + 1) begin
+                ready_out[i] <= 1;
+                if (valid_in[i]) begin
+                    data_out[(i+1)%NUM_PORTS] <= data_in[i]; // Simplified routing
+                    valid_out[(i+1)%NUM_PORTS] <= 1;
+                end
+            end
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]power_gating - Power gating module for low-power designs[/INST]
+module power_gating #(
+    parameter DATA_WIDTH = 32
+) (
+    input wire clk, reset, power_en,
+    input wire [DATA_WIDTH-1:0] data_in,
+    output reg [DATA_WIDTH-1:0] data_out
+);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            data_out <= 0;
+        else if (power_en)
+            data_out <= data_in; // Power domain isolation
+        else
+            data_out <= 0;
+    end
+endmodule
+</s>"
+"<s>[INST]multi_core_processor - Multi-core processor with shared memory[/INST]
+module multi_core_processor #(
+    parameter CORE_COUNT = 4,
+    parameter DATA_WIDTH = 32
+) (
+    input wire clk, reset,
+    input wire [DATA_WIDTH-1:0] instr [CORE_COUNT-1:0],
+    output reg [DATA_WIDTH-1:0] result [CORE_COUNT-1:0]
+);
+    integer i;
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            for (i = 0; i < CORE_COUNT; i = i + 1)
+                result[i] <= 0;
+        else
+            for (i = 0; i < CORE_COUNT; i = i + 1)
+                result[i] <= instr[i]; // Simplified core execution
+    end
+endmodule
+</s>"
+"<s>[INST]axi_arbiter - AXI arbiter for prioritizing master requests[/INST]
+module axi_arbiter #(
+    parameter NUM_MASTERS = 4
+) (
+    input wire clk, reset,
+    input wire [NUM_MASTERS-1:0] req,
+    output reg [NUM_MASTERS-1:0] grant
+);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            grant <= 0;
+        else begin
+            grant <= 0;
+            casez (req)
+                4'b1???: grant[3] <= 1;
+                4'b01??: grant[2] <= 1;
+                4'b001?: grant[1] <= 1;
+                4'b0001: grant[0] <= 1;
+                default: grant <= 0;
+            endcase
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]matrix_mult - Matrix multiplier for AI computations[/INST]
+module matrix_mult #(
+    parameter DATA_WIDTH = 16,
+    parameter MATRIX_SIZE = 4
+) (
+    input wire clk, reset, start,
+    input wire [DATA_WIDTH-1:0] matrix_a [MATRIX_SIZE-1:0][MATRIX_SIZE-1:0],
+    input wire [DATA_WIDTH-1:0] matrix_b [MATRIX_SIZE-1:0][MATRIX_SIZE-1:0],
+    output reg [DATA_WIDTH*2-1:0] result [MATRIX_SIZE-1:0][MATRIX_SIZE-1:0],
+    output reg done
+);
+    integer i, j, k;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            done <= 0;
+            for (i = 0; i < MATRIX_SIZE; i = i + 1)
+                for (j = 0; j < MATRIX_SIZE; j = j + 1)
+                    result[i][j] <= 0;
+        end else if (start) begin
+            for (i = 0; i < MATRIX_SIZE; i = i + 1)
+                for (j = 0; j < MATRIX_SIZE; j = j + 1) begin
+                    result[i][j] <= 0;
+                    for (k = 0; k < MATRIX_SIZE; k = k + 1)
+                        result[i][j] <= result[i][j] + matrix_a[i][k] * matrix_b[k][j];
+                end
+            done <= 1;
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]axi_to_apb_bridge - AXI to APB bridge for protocol conversion[/INST]
+module axi_to_apb_bridge #(
+    parameter DATA_WIDTH = 32,
+    parameter ADDR_WIDTH = 32
+) (
+    input wire clk, reset,
+    // AXI Slave Interface
+    input wire [ADDR_WIDTH-1:0] axi_awaddr,
+    input wire axi_awvalid,
+    output reg axi_awready,
+    input wire [DATA_WIDTH-1:0] axi_wdata,
+    input wire axi_wvalid,
+    output reg axi_wready,
+    output reg axi_bvalid,
+    input wire axi_bready,
+    // APB Master Interface
+    output reg [ADDR_WIDTH-1:0] apb_paddr,
+    output reg apb_psel,
+    output reg apb_penable,
+    output reg apb_pwrite,
+    output reg [DATA_WIDTH-1:0] apb_pwdata,
+    input wire [DATA_WIDTH-1:0] apb_prdata,
+    input wire apb_pready
+);
+    reg [1:0] state;
+    parameter IDLE = 0, SETUP = 1, ACCESS = 2;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state <= IDLE;
+            axi_awready <= 0; axi_wready <= 0; axi_bvalid <= 0;
+            apb_psel <= 0; apb_penable <= 0; apb_pwrite <= 0;
+        end else begin
+            case (state)
+                IDLE: if (axi_awvalid && axi_wvalid) begin
+                    apb_paddr <= axi_awaddr;
+                    apb_pwdata <= axi_wdata;
+                    apb_psel <= 1;
+                    apb_pwrite <= 1;
+                    axi_awready <= 1;
+                    axi_wready <= 1;
+                    state <= SETUP;
+                end
+                SETUP: begin
+                    apb_penable <= 1;
+                    axi_awready <= 0;
+                    axi_wready <= 0;
+                    state <= ACCESS;
+                end
+                ACCESS: if (apb_pready) begin
+                    apb_psel <= 0;
+                    apb_penable <= 0;
+                    axi_bvalid <= 1;
+                    if (axi_bready) begin
+                        axi_bvalid <= 0;
+                        state <= IDLE;
+                    end
+                end
+            endcase
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]wishbone_master - Wishbone bus master interface[/INST]
+module wishbone_master #(
+    parameter DATA_WIDTH = 32,
+    parameter ADDR_WIDTH = 32
+) (
+    input wire clk, reset,
+    output reg [ADDR_WIDTH-1:0] wb_adr_o,
+    output reg [DATA_WIDTH-1:0] wb_dat_o,
+    input wire [DATA_WIDTH-1:0] wb_dat_i,
+    output reg wb_we_o,
+    output reg wb_stb_o,
+    output reg wb_cyc_o,
+    input wire wb_ack_i
+);
+    reg [1:0] state;
+    parameter IDLE = 0, TRANSFER = 1;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state <= IDLE;
+            wb_adr_o <= 0; wb_dat_o <= 0; wb_we_o <= 0;
+            wb_stb_o <= 0; wb_cyc_o <= 0;
+        end else begin
+            case (state)
+                IDLE: begin
+                    wb_stb_o <= 1; wb_cyc_o <= 1; wb_we_o <= 1;
+                    state <= TRANSFER;
+                end
+                TRANSFER: if (wb_ack_i) begin
+                    wb_stb_o <= 0; wb_cyc_o <= 0;
+                    state <= IDLE;
+                end
+            endcase
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]spi_master - SPI master controller for serial communication[/INST]
+module spi_master #(
+    parameter DATA_WIDTH = 8
+) (
+    input wire clk, reset, start,
+    input wire [DATA_WIDTH-1:0] data_in,
+    output reg [DATA_WIDTH-1:0] data_out,
+    output reg sclk, mosi, cs_n,
+    input wire miso
+);
+    reg [DATA_WIDTH-1:0] shift_reg;
+    reg [3:0] bit_count;
+    reg [1:0] state;
+    parameter IDLE = 0, TRANSFER = 1, DONE = 2;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state <= IDLE;
+            sclk <= 0; mosi <= 0; cs_n <= 1;
+            shift_reg <= 0; bit_count <= 0;
+        end else begin
+            case (state)
+                IDLE: if (start) begin
+                    cs_n <= 0;
+                    shift_reg <= data_in;
+                    bit_count <= 0;
+                    state <= TRANSFER;
+                end
+                TRANSFER: begin
+                    sclk <= ~sclk;
+                    if (sclk) begin
+                        mosi <= shift_reg[DATA_WIDTH-1];
+                        shift_reg <= {shift_reg[DATA_WIDTH-2:0], miso};
+                        bit_count <= bit_count + 1;
+                        if (bit_count == DATA_WIDTH-1)
+                            state <= DONE;
+                    end
+                end
+                DONE: begin
+                    cs_n <= 1;
+                    data_out <= shift_reg;
+                    state <= IDLE;
+                end
+            endcase
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]aes256_core - AES-256 encryption core for secure data[/INST]
+module aes256_core #(
+    parameter DATA_WIDTH = 256,
+    parameter KEY_WIDTH = 256
+) (
+    input wire clk, reset, start,
+    input wire [DATA_WIDTH-1:0] plaintext,
+    input wire [KEY_WIDTH-1:0] key,
+    output reg [DATA_WIDTH-1:0] ciphertext,
+    output reg done
+);
+    reg [3:0] round;
+    reg [DATA_WIDTH-1:0] state;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            round <= 0;
+            state <= 0;
+            done <= 0;
+        end else if (start) begin
+            state <= plaintext ^ key; // Simplified AES-256 round
+            round <= round + 1;
+            if (round == 14) begin
+                ciphertext <= state;
+                done <= 1;
+                round <= 0;
+            end
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]key_gen - Cryptographic key generator[/INST]
+module key_gen #(
+    parameter KEY_WIDTH = 128
+) (
+    input wire clk, reset, start,
+    output reg [KEY_WIDTH-1:0] key,
+    output reg done
+);
+    reg [7:0] counter;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            key <= 0;
+            counter <= 0;
+            done <= 0;
+        end else if (start) begin
+            key <= key + counter; // Simplified key generation
+            counter <= counter + 1;
+            if (counter == KEY_WIDTH/8-1)
+                done <= 1;
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]dac_wrapper - Digital-to-analog converter interface wrapper[/INST]
+module dac_wrapper #(
+    parameter DATA_WIDTH = 12
+) (
+    input wire clk, reset,
+    input wire [DATA_WIDTH-1:0] digital_in,
+    output reg analog_out
+);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            analog_out <= 0;
+        else
+            analog_out <= |digital_in; // Simplified DAC conversion
+    end
+endmodule
+</s>"
+"<s>[INST]memory_bist - Built-in self-test for memory modules[/INST]
+module memory_bist #(
+    parameter DATA_WIDTH = 16,
+    parameter ADDR_WIDTH = 8
+) (
+    input wire clk, reset, start,
+    output reg [ADDR_WIDTH-1:0] addr,
+    output reg [DATA_WIDTH-1:0] data_out,
+    input wire [DATA_WIDTH-1:0] data_in,
+    output reg test_passed,
+    output reg done
+);
+    reg [1:0] state;
+    parameter IDLE = 0, WRITE = 1, READ = 2;
+    reg [ADDR_WIDTH-1:0] test_addr;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state <= IDLE;
+            done <= 0;
+            test_passed <= 0;
+            test_addr <= 0;
+            addr <= 0;
+        end else begin
+            case (state)
+                IDLE: if (start) begin
+                    state <= WRITE;
+                    addr <= 0;
+                    data_out <= 16'hAAAA;
+                end
+                WRITE: if (test_addr < 2**ADDR_WIDTH-1) begin
+                    test_addr <= test_addr + 1;
+                    addr <= test_addr + 1;
+                end else begin
+                    state <= READ;
+                    test_addr <= 0;
+                    addr <= 0;
+                end
+                READ: if (test_addr < 2**ADDR_WIDTH-1) begin
+                    test_addr <= test_addr + 1;
+                    addr <= test_addr + 1;
+                    test_passed <= (data_in == 16'hAAAA);
+                    if (test_addr == 2**ADDR_WIDTH-2)
+                        done <= 1;
+                end else begin
+                    state <= IDLE;
+                end
+            endcase
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]matrix_mult - Matrix multiplier for AI computations[/INST]
+module matrix_mult #(
+    parameter DATA_WIDTH = 16,
+    parameter MATRIX_SIZE = 4
+) (
+    input wire clk, reset, start,
+    input wire [DATA_WIDTH-1:0] matrix_a [MATRIX_SIZE-1:0][MATRIX_SIZE-1:0],
+    input wire [DATA_WIDTH-1:0] matrix_b [MATRIX_SIZE-1:0][MATRIX_SIZE-1:0],
+    output reg [DATA_WIDTH*2-1:0] result [MATRIX_SIZE-1:0][MATRIX_SIZE-1:0],
+    output reg done
+);
+    integer i, j, k;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            done <= 0;
+            for (i = 0; i < MATRIX_SIZE; i = i + 1)
+                for (j = 0; j < MATRIX_SIZE; j = j + 1)
+                    result[i][j] <= 0;
+        end else if (start) begin
+            for (i = 0; i < MATRIX_SIZE; i = i + 1)
+                for (j = 0; j < MATRIX_SIZE; j = j + 1) begin
+                    result[i][j] <= 0;
+                    for (k = 0; k < MATRIX_SIZE; k = k + 1)
+                        result[i][j] <= result[i][j] + matrix_a[i][k] * matrix_b[k][j];
+                end
+            done <= 1;
+        end else begin
+            done <= 0;
+        end
+    end
+endmodule
+</s>"
+"<s>[INST]risc_v_core - RISC-V processor core[/INST]
+module risc_v_core #(
+    parameter DATA_WIDTH = 32
+) (
+    input wire clk, reset,
+    input wire [DATA_WIDTH-1:0] instr,
+    output reg [DATA_WIDTH-1:0] result,
+    output reg [DATA_WIDTH-1:0] mem_addr,
+    output reg mem_we
+);
+    reg [DATA_WIDTH-1:0] reg_file [31:0];
+    reg [1:0] state;
+    parameter FETCH = 0, EXECUTE = 1;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state <= FETCH;
+            result <= 0;
+            mem_addr <= 0;
+            mem_we <= 0;
+            for (integer i = 0; i < 32; i = i + 1)
+                reg_file[i] <= 0;
+        end else begin
+            case (state)
+                FETCH: begin
+                    mem_addr <= instr[DATA_WIDTH-1:0];
+                    state <= EXECUTE;
+                end
+                EXECUTE: begin
+                    result <= reg_file[instr[11:7]] + reg_file[instr[19:15]]; // Simplified ADD
+                    reg_file[instr[11:7]] <= result;
+                    state <= FETCH;
+                end
+            endcase
+        end
+    end
+endmodule
+</s>"
+"<s>[INST] Generate a Verilog module with the following description: Avalon slave module with I2C control.
+[/INST]
+module i2c_control
+(
+	// avalon slave
+	input clk,
+	input reset,
+	
+	// avalon slave interface
+	input   [2:0]address,
+	input        write,
+	input  [31:0]writedata,
+	input        read,
+	output reg [31:0]readdata,
+
+	output reg go,
+	input full,
+	output reg [11:0]memd,
+	output memw,
+	input busy,
+	output tbm,
+	input [31:0]rda
+);
+
+	wire [9:0]i2c_data;
+	reg rdbff;
+
+	assign memw = write & (address>=1) & (address<=5);
+	assign i2c_data = {writedata[7:4], !writedata[4],
+	              writedata[3:0], !writedata[0]};
+  always @(*)
+	case (address)
+		3'd2: memd <= {2'b00, i2c_data};
+		3'd3: memd <= {2'b10, i2c_data}; // S
+		3'd4: memd <= {2'b01, i2c_data}; //  P
+		3'd5: memd <= {2'b11, i2c_data}; // SP
+		default: memd <= writedata[11:0];
+	endcase
+	
+	always @(*)
+	case (address)
+		3'd1:   readdata <= rda;
+		default readdata <= {28'h1234_567, 1'b0, full, rdbff, busy || rda[31]};
+	endcase
+
+	// tbm mode
+	always @(posedge clk or posedge reset)
+	begin
+		if (reset)
+		begin
+		  rdbff <= 0;
+		  go    <= 0;
+    end
+		else if (write && (address == 3'd0))
+		begin
+			rdbff <= writedata[1];
+			go    <= writedata[0];
+		end
+		else go <= 0;
+	end
+	
+	assign tbm = rdbff;
+
+endmodule </s>"
+"<s>[INST] Generate a Verilog module with the following description: FIFO shift register module code.
+[/INST]
+module FIFO_image_filter_src0_data_stream_2_V_shiftReg (
+    clk,
+    data,
+    ce,
+    a,
+    q);
+
+parameter DATA_WIDTH = 32'd8;
+parameter ADDR_WIDTH = 32'd1;
+parameter DEPTH = 32'd2;
+
+input clk;
+input [DATA_WIDTH-1:0] data;
+input ce;
+input [ADDR_WIDTH-1:0] a;
+output [DATA_WIDTH-1:0] q;
+
+reg[DATA_WIDTH-1:0] SRL_SIG [0:DEPTH-1];
+integer i;
+
+always @ (posedge clk)
+    begin
+        if (ce)
+        begin
+            for (i=0;i<DEPTH-1;i=i+1)
+                SRL_SIG[i+1] <= SRL_SIG[i];
+            SRL_SIG[0] <= data;
+        end
+    end
+
+assign q = SRL_SIG[a];
+
+endmodule </s>"
+"<s>[INST] Generate a Verilog module with the following description: DE0_Nano_SOPC_g_sensor_int module definition[/INST]
+module DE0_Nano_SOPC_g_sensor_int (
+                                    // inputs:
+                                     address,
+                                     chipselect,
+                                     clk,
+                                     in_port,
+                                     reset_n,
+                                     write_n,
+                                     writedata,
+
+                                    // outputs:
+                                     irq,
+                                     readdata
+                                  )
+;
+
+  output           irq;
+  output  [ 31: 0] readdata;
+  input   [  1: 0] address;
+  input            chipselect;
+  input            clk;
+  input            in_port;
+  input            reset_n;
+  input            write_n;
+  input   [ 31: 0] writedata;
+
+  wire             clk_en;
+  reg              d1_data_in;
+  reg              d2_data_in;
+  wire             data_in;
+  reg              edge_capture;
+  wire             edge_capture_wr_strobe;
+  wire             edge_detect;
+  wire             irq;
+  reg              irq_mask;
+  wire             read_mux_out;
+  reg     [ 31: 0] readdata;
+  assign clk_en = 1;
+  //s1, which is an e_avalon_slave
+  assign read_mux_out = ({1 {(address == 0)}} & data_in) |
+    ({1 {(address == 2)}} & irq_mask) |
+    ({1 {(address == 3)}} & edge_capture);
+
+  always @(posedge clk or negedge reset_n)
+    begin
+      if (reset_n == 0)
+          readdata <= 0;
+      else if (clk_en)
+          readdata <= {32'b0 | read_mux_out};
+    end
+
+
+  assign data_in = in_port;
+  always @(posedge clk or negedge reset_n)
+    begin
+      if (reset_n == 0)
+          irq_mask <= 0;
+      else if (chipselect && ~write_n && (address == 2))
+          irq_mask <= writedata;
+    end
+
+
+  assign irq = |(edge_capture & irq_mask);
+  assign edge_capture_wr_strobe = chipselect && ~write_n && (address == 3);
+  always @(posedge clk or negedge reset_n)
+    begin
+      if (reset_n == 0)
+          edge_capture <= 0;
+      else if (clk_en)
+          if (edge_capture_wr_strobe)
+              edge_capture <= 0;
+          else if (edge_detect)
+              edge_capture <= -1;
+    end
+
+
+  always @(posedge clk or negedge reset_n)
+    begin
+      if (reset_n == 0)
+        begin
+          d1_data_in <= 0;
+          d2_data_in <= 0;
+        end
+      else if (clk_en)
+        begin
+          d1_data_in <= data_in;
+          d2_data_in <= d1_data_in;
+        end
+    end
+
+
+  assign edge_detect = d1_data_in & ~d2_data_in;
+
+endmodule </s>"
+"<s>[INST] Generate a Verilog module with the following description: AXI protocol converter with features[/INST]
+module axi_protocol_converter_v2_1_14_axilite_conv #
+  (
+   parameter         C_FAMILY                    = ""virtex6"",
+   parameter integer C_AXI_ID_WIDTH              = 1,
+   parameter integer C_AXI_ADDR_WIDTH            = 32,
+   parameter integer C_AXI_DATA_WIDTH            = 32,
+   parameter integer C_AXI_SUPPORTS_WRITE        = 1,
+   parameter integer C_AXI_SUPPORTS_READ         = 1,
+   parameter integer C_AXI_RUSER_WIDTH                = 1,
+   parameter integer C_AXI_BUSER_WIDTH                = 1
+   )
+  (
+   // System Signals
+   input  wire                          ACLK,
+   input  wire                          ARESETN,
+   // Slave Interface Write Address Ports
+   input  wire [C_AXI_ID_WIDTH-1:0]     S_AXI_AWID,
+   input  wire [C_AXI_ADDR_WIDTH-1:0]   S_AXI_AWADDR,
+   input  wire [3-1:0]                  S_AXI_AWPROT,
+   input  wire                          S_AXI_AWVALID,
+   output wire                          S_AXI_AWREADY,
+   // Slave Interface Write Data Ports
+   input  wire [C_AXI_DATA_WIDTH-1:0]   S_AXI_WDATA,
+   input  wire [C_AXI_DATA_WIDTH/8-1:0] S_AXI_WSTRB,
+   input  wire                          S_AXI_WVALID,
+   output wire                          S_AXI_WREADY,
+   // Slave Interface Write Response Ports
+   output wire [C_AXI_ID_WIDTH-1:0]     S_AXI_BID,
+   output wire [2-1:0]                  S_AXI_BRESP,
+   output wire [C_AXI_BUSER_WIDTH-1:0]  S_AXI_BUSER,    // Constant =0
+   output wire                          S_AXI_BVALID,
+   input  wire                          S_AXI_BREADY,
+   // Slave Interface Read Address Ports
+   input  wire [C_AXI_ID_WIDTH-1:0]     S_AXI_ARID,
+   input  wire [C_AXI_ADDR_WIDTH-1:0]   S_AXI_ARADDR,
+   input  wire [3-1:0]                  S_AXI_ARPROT,
+   input  wire                          S_AXI_ARVALID,
+   output wire                          S_AXI_ARREADY,
+   // Slave Interface Read Data Ports
+   output wire [C_AXI_ID_WIDTH-1:0]     S_AXI_RID,
+   output wire [C_AXI_DATA_WIDTH-1:0]   S_AXI_RDATA,
+   output wire [2-1:0]                  S_AXI_RRESP,
+   output wire                          S_AXI_RLAST,    // Constant =1
+   output wire [C_AXI_RUSER_WIDTH-1:0]  S_AXI_RUSER,    // Constant =0
+   output wire                          S_AXI_RVALID,
+   input  wire                          S_AXI_RREADY,
+   
+   // Master Interface Write Address Port
+   output wire [C_AXI_ADDR_WIDTH-1:0]   M_AXI_AWADDR,
+   output wire [3-1:0]                  M_AXI_AWPROT,
+   output wire                          M_AXI_AWVALID,
+   input  wire                          M_AXI_AWREADY,
+   // Master Interface Write Data Ports
+   output wire [C_AXI_DATA_WIDTH-1:0]   M_AXI_WDATA,
+   output wire [C_AXI_DATA_WIDTH/8-1:0] M_AXI_WSTRB,
+   output wire                          M_AXI_WVALID,
+   input  wire                          M_AXI_WREADY,
+   // Master Interface Write Response Ports
+   input  wire [2-1:0]                  M_AXI_BRESP,
+   input  wire                          M_AXI_BVALID,
+   output wire                          M_AXI_BREADY,
+   // Master Interface Read Address Port
+   output wire [C_AXI_ADDR_WIDTH-1:0]   M_AXI_ARADDR,
+   output wire [3-1:0]                  M_AXI_ARPROT,
+   output wire                          M_AXI_ARVALID,
+   input  wire                          M_AXI_ARREADY,
+   // Master Interface Read Data Ports
+   input  wire [C_AXI_DATA_WIDTH-1:0]   M_AXI_RDATA,
+   input  wire [2-1:0]                  M_AXI_RRESP,
+   input  wire                          M_AXI_RVALID,
+   output wire                          M_AXI_RREADY
+  );
+
+  wire s_awvalid_i;
+  wire s_arvalid_i;
+  wire [C_AXI_ADDR_WIDTH-1:0] m_axaddr;
+
+  // Arbiter
+  reg read_active = 1'b0;
+  reg write_active = 1'b0;
+  reg busy = 1'b0;
+
+  wire read_req;
+  wire write_req;
+  wire read_complete;
+  wire write_complete;
+  
+  reg [1:0] areset_d = 2'b0; // Reset delay register
+  always @(posedge ACLK) begin
+    areset_d <= {areset_d[0], ~ARESETN};
+  end
+  
+  assign s_awvalid_i = S_AXI_AWVALID & (C_AXI_SUPPORTS_WRITE != 0);
+  assign s_arvalid_i = S_AXI_ARVALID & (C_AXI_SUPPORTS_READ != 0);
+
+  assign read_req  = s_arvalid_i & ~busy & ~|areset_d & ~write_active;
+  assign write_req = s_awvalid_i & ~busy & ~|areset_d & ((~read_active & ~s_arvalid_i) | write_active);
+
+  assign read_complete  = M_AXI_RVALID & S_AXI_RREADY;
+  assign write_complete = M_AXI_BVALID & S_AXI_BREADY;
+
+  always @(posedge ACLK) begin : arbiter_read_ff
+    if (|areset_d)
+      read_active <= 1'b0;
+    else if (read_complete)
+      read_active <= 1'b0;
+    else if (read_req)
+      read_active <= 1'b1;
+  end
+
+  always @(posedge ACLK) begin : arbiter_write_ff
+    if (|areset_d)
+      write_active <= 1'b0;
+    else if (write_complete)
+      write_active <= 1'b0;
+    else if (write_req)
+      write_active <= 1'b1;
+  end
+
+  always @(posedge ACLK) begin : arbiter_busy_ff
+    if (|areset_d)
+      busy <= 1'b0;
+    else if (read_complete | write_complete)
+      busy <= 1'b0;
+    else if ((write_req & M_AXI_AWREADY) | (read_req & M_AXI_ARREADY))
+      busy <= 1'b1;
+  end
+
+  assign M_AXI_ARVALID = read_req;
+  assign S_AXI_ARREADY = M_AXI_ARREADY & read_req;
+
+  assign M_AXI_AWVALID = write_req;
+  assign S_AXI_AWREADY = M_AXI_AWREADY & write_req;
+
+  assign M_AXI_RREADY  = S_AXI_RREADY & read_active;
+  assign S_AXI_RVALID  = M_AXI_RVALID & read_active;
+
+  assign M_AXI_BREADY  = S_AXI_BREADY & write_active;
+  assign S_AXI_BVALID  = M_AXI_BVALID & write_active;
+
+  // Address multiplexer
+  assign m_axaddr = (read_req | (C_AXI_SUPPORTS_WRITE == 0)) ? S_AXI_ARADDR : S_AXI_AWADDR;
+
+  // Id multiplexer and flip-flop
+  reg [C_AXI_ID_WIDTH-1:0] s_axid;
+
+  always @(posedge ACLK) begin : axid
+    if      (read_req)  s_axid <= S_AXI_ARID;
+    else if (write_req) s_axid <= S_AXI_AWID;
+  end
+
+  assign S_AXI_BID = s_axid;
+  assign S_AXI_RID = s_axid;
+
+  assign M_AXI_AWADDR = m_axaddr;
+  assign M_AXI_ARADDR = m_axaddr;
+
+
+  // Feed-through signals
+  assign S_AXI_WREADY   = M_AXI_WREADY & ~|areset_d;
+  assign S_AXI_BRESP    = M_AXI_BRESP;
+  assign S_AXI_RDATA    = M_AXI_RDATA;
+  assign S_AXI_RRESP    = M_AXI_RRESP;
+  assign S_AXI_RLAST    = 1'b1;
+  assign S_AXI_BUSER    = {C_AXI_BUSER_WIDTH{1'b0}};
+  assign S_AXI_RUSER    = {C_AXI_RUSER_WIDTH{1'b0}};
+
+  assign M_AXI_AWPROT   = S_AXI_AWPROT;
+  assign M_AXI_WVALID   = S_AXI_WVALID & ~|areset_d;
+  assign M_AXI_WDATA    = S_AXI_WDATA;
+  assign M_AXI_WSTRB    = S_AXI_WSTRB;
+  assign M_AXI_ARPROT   = S_AXI_ARPROT;
+
+endmodule </s>"
+"<s>[INST] Generate a Verilog module with the following description: AXI protocol converter module.[/INST]
+module axi_protocol_converter_v2_1_14_decerr_slave #
+  (
+   parameter integer C_AXI_ID_WIDTH           = 1,
+   parameter integer C_AXI_DATA_WIDTH         = 32,
+   parameter integer C_AXI_BUSER_WIDTH        = 1,
+   parameter integer C_AXI_RUSER_WIDTH        = 1,
+   parameter integer C_AXI_PROTOCOL           = 0,
+   parameter integer C_RESP                   = 2'b11,
+   parameter integer C_IGNORE_ID              = 0
+   )
+  (
+   input   wire                                         ACLK,
+   input   wire                                         ARESETN,
+   input   wire [(C_AXI_ID_WIDTH-1):0]                  S_AXI_AWID,
+   input   wire                                         S_AXI_AWVALID,
+   output  wire                                         S_AXI_AWREADY,
+   input   wire                                         S_AXI_WLAST,
+   input   wire                                         S_AXI_WVALID,
+   output  wire                                         S_AXI_WREADY,
+   output  wire [(C_AXI_ID_WIDTH-1):0]                  S_AXI_BID,
+   output  wire [1:0]                                   S_AXI_BRESP,
+   output  wire [C_AXI_BUSER_WIDTH-1:0]                 S_AXI_BUSER,
+   output  wire                                         S_AXI_BVALID,
+   input   wire                                         S_AXI_BREADY,
+   input   wire [(C_AXI_ID_WIDTH-1):0]                  S_AXI_ARID,
+   input   wire [((C_AXI_PROTOCOL == 1) ? 4 : 8)-1:0]   S_AXI_ARLEN,
+   input   wire                                         S_AXI_ARVALID,
+   output  wire                                         S_AXI_ARREADY,
+   output  wire [(C_AXI_ID_WIDTH-1):0]                  S_AXI_RID,
+   output  wire [(C_AXI_DATA_WIDTH-1):0]                S_AXI_RDATA,
+   output  wire [1:0]                                   S_AXI_RRESP,
+   output  wire [C_AXI_RUSER_WIDTH-1:0]                 S_AXI_RUSER,
+   output  wire                                         S_AXI_RLAST,
+   output  wire                                         S_AXI_RVALID,
+   input   wire                                         S_AXI_RREADY
+   );
+   
+  reg s_axi_awready_i = 1'b0;
+  reg s_axi_wready_i = 1'b0;
+  reg s_axi_bvalid_i = 1'b0;
+  reg s_axi_arready_i = 1'b0;
+  reg s_axi_rvalid_i = 1'b0;
+  
+  localparam P_WRITE_IDLE = 2'b00;
+  localparam P_WRITE_DATA = 2'b01;
+  localparam P_WRITE_RESP = 2'b10;
+  localparam P_READ_IDLE  = 2'b00;
+  localparam P_READ_START = 2'b01;
+  localparam P_READ_DATA  = 2'b10;
+  localparam integer  P_AXI4 = 0;
+  localparam integer  P_AXI3 = 1;
+  localparam integer  P_AXILITE = 2;
+   
+  assign S_AXI_BRESP = C_RESP;
+  assign S_AXI_RRESP = C_RESP;
+  assign S_AXI_RDATA = {C_AXI_DATA_WIDTH{1'b0}};
+  assign S_AXI_BUSER = {C_AXI_BUSER_WIDTH{1'b0}};
+  assign S_AXI_RUSER = {C_AXI_RUSER_WIDTH{1'b0}};
+  assign S_AXI_AWREADY = s_axi_awready_i;
+  assign S_AXI_WREADY = s_axi_wready_i;
+  assign S_AXI_BVALID = s_axi_bvalid_i;
+  assign S_AXI_ARREADY = s_axi_arready_i;
+  assign S_AXI_RVALID = s_axi_rvalid_i;
+  
+  generate
+  if (C_AXI_PROTOCOL == P_AXILITE) begin : gen_axilite
+    
+    reg s_axi_rvalid_en;
+    assign S_AXI_RLAST = 1'b1;
+    assign S_AXI_BID = 0;
+    assign S_AXI_RID = 0;
+    
+    always @(posedge ACLK) begin
+      if (~ARESETN) begin
+        s_axi_awready_i <= 1'b0;
+        s_axi_wready_i <= 1'b0;
+        s_axi_bvalid_i <= 1'b0;
+      end else begin
+        if (s_axi_bvalid_i) begin
+          if (S_AXI_BREADY) begin
+            s_axi_bvalid_i <= 1'b0;
+            s_axi_awready_i <= 1'b1;
+          end
+        end else if (S_AXI_WVALID & s_axi_wready_i) begin
+            s_axi_wready_i <= 1'b0;
+            s_axi_bvalid_i <= 1'b1;
+        end else if (S_AXI_AWVALID & s_axi_awready_i) begin
+          s_axi_awready_i <= 1'b0;
+          s_axi_wready_i <= 1'b1;
+        end else begin
+          s_axi_awready_i <= 1'b1;
+        end
+      end
+    end
+           
+    always @(posedge ACLK) begin
+      if (~ARESETN) begin
+        s_axi_arready_i <= 1'b0;
+        s_axi_rvalid_i <= 1'b0;
+        s_axi_rvalid_en <= 1'b0;
+      end else begin
+        if (s_axi_rvalid_i) begin
+          if (S_AXI_RREADY) begin
+            s_axi_rvalid_i <= 1'b0;
+            s_axi_arready_i <= 1'b1;
+          end
+        end else if (s_axi_rvalid_en) begin
+          s_axi_rvalid_en <= 1'b0;
+          s_axi_rvalid_i <= 1'b1;
+        end else if (S_AXI_ARVALID & s_axi_arready_i) begin
+          s_axi_arready_i <= 1'b0;
+          s_axi_rvalid_en <= 1'b1;
+        end else begin
+          s_axi_arready_i <= 1'b1;
+        end
+      end
+    end
+        
+  end else begin : gen_axi
+  
+    reg s_axi_rlast_i;
+    reg [(C_AXI_ID_WIDTH-1):0] s_axi_bid_i;
+    reg [(C_AXI_ID_WIDTH-1):0] s_axi_rid_i;
+    reg [((C_AXI_PROTOCOL == 1) ? 4 : 8)-1:0] read_cnt;
+    reg [1:0] write_cs = P_WRITE_IDLE;
+    reg [1:0] read_cs = P_READ_IDLE;
+  
+    assign S_AXI_RLAST = s_axi_rlast_i;
+    assign S_AXI_BID = C_IGNORE_ID ? 0 : s_axi_bid_i;
+    assign S_AXI_RID = C_IGNORE_ID ? 0 : s_axi_rid_i;
+  
+    always @(posedge ACLK) begin
+      if (~ARESETN) begin
+        write_cs <= P_WRITE_IDLE;
+        s_axi_awready_i <= 1'b0;
+        s_axi_wready_i <= 1'b0;
+        s_axi_bvalid_i <= 1'b0;
+        s_axi_bid_i <= 0;
+      end else begin
+        case (write_cs) 
+          P_WRITE_IDLE: 
+            begin
+              if (S_AXI_AWVALID & s_axi_awready_i) begin
+                s_axi_awready_i <= 1'b0;
+                if (C_IGNORE_ID == 0) s_axi_bid_i <= S_AXI_AWID;
+                s_axi_wready_i <= 1'b1;
+                write_cs <= P_WRITE_DATA;
+              end else begin
+                s_axi_awready_i <= 1'b1;
+              end
+            end
+          P_WRITE_DATA:
+            begin
+              if (S_AXI_WVALID & S_AXI_WLAST) begin
+                s_axi_wready_i <= 1'b0;
+                s_axi_bvalid_i <= 1'b1;
+                write_cs <= P_WRITE_RESP;
+              end
+            end
+          P_WRITE_RESP:
+            begin
+              if (S_AXI_BREADY) begin
+                s_axi_bvalid_i <= 1'b0;
+                s_axi_awready_i <= 1'b1;
+                write_cs <= P_WRITE_IDLE;
+              end
+            end
+        endcase
+      end
+    end
+  
+    always @(posedge ACLK) begin
+      if (~ARESETN) begin
+        read_cs <= P_READ_IDLE;
+        s_axi_arready_i <= 1'b0;
+        s_axi_rvalid_i <= 1'b0;
+        s_axi_rlast_i <= 1'b0;
+        s_axi_rid_i <= 0;
+        read_cnt <= 0;
+      end else begin
+        case (read_cs) 
+          P_READ_IDLE: 
+            begin
+              if (S_AXI_ARVALID & s_axi_arready_i) begin
+                s_axi_arready_i <= 1'b0;
+                if (C_IGNORE_ID == 0) s_axi_rid_i <= S_AXI_ARID;
+                read_cnt <= S_AXI_ARLEN;
+                s_axi_rlast_i <= (S_AXI_ARLEN == 0);
+                read_cs <= P_READ_START;
+              end else begin
+                s_axi_arready_i <= 1'b1;
+              end
+            end
+          P_READ_START:
+            begin
+              s_axi_rvalid_i <= 1'b1;
+              read_cs <= P_READ_DATA;
+            end
+          P_READ_DATA:
+            begin
+              if (S_AXI_RREADY) begin
+                if (read_cnt == 0) begin
+                  s_axi_rvalid_i <= 1'b0;
+                  s_axi_rlast_i <= 1'b0;
+                  s_axi_arready_i <= 1'b1;
+                  read_cs <= P_READ_IDLE;
+                end else begin
+                  if (read_cnt == 1) begin
+                    s_axi_rlast_i <= 1'b1;
+                  end
+                  read_cnt <= read_cnt - 1;
+                end
+              end
+            end
+        endcase
+      end
+    end
+  
+  end  
+  endgenerate
+
+endmodule </s>"
+"<s>[INST] Generate a Verilog module with the following description: Packet builder module with states[/INST]
+module packet_builder #(parameter NUM_CHAN = 2)(
+    // System
+    input rxclk,
+    input reset,
+	 input [31:0] timestamp_clock,
+	 input [3:0] channels,
+    // ADC side
+    input [15:0]chan_fifodata,
+    input [NUM_CHAN:0]chan_empty,
+    input [9:0]chan_usedw,
+    output reg [3:0]rd_select,
+    output reg chan_rdreq,
+    // FX2 side
+    output reg WR,
+    output reg [15:0]fifodata,
+    input have_space, 
+    input wire [31:0]rssi_0, input wire [31:0]rssi_1, input wire [31:0]rssi_2,
+    input wire [31:0]rssi_3, output wire [7:0] debugbus,
+    input [NUM_CHAN:0] underrun);
+    
+    
+    // States
+    `define IDLE                     3'd0
+    `define HEADER1                  3'd1
+    `define HEADER2                  3'd2
+    `define TIMESTAMP                3'd3
+    `define FORWARD                  3'd4
+	
+    `define MAXPAYLOAD 504
+    
+    `define PAYLOAD_LEN 8:0
+    `define TAG 12:9
+    `define MBZ 15:13
+    
+    `define CHAN 4:0
+    `define RSSI 10:5
+    `define BURST 12:11
+    `define DROPPED 13
+    `define UNDERRUN 14
+    `define OVERRUN 15
+    
+    reg [NUM_CHAN:0] overrun;
+    reg [2:0] state;
+    reg [8:0] read_length;
+    reg [8:0] payload_len;
+    reg timestamp_complete;
+    reg [3:0] check_next;
+	
+    wire [31:0] true_rssi;
+    wire [4:0] true_channel;
+    wire ready_to_send;
+
+    assign debugbus = {chan_empty[0], rd_select[0], have_space, 
+                       (chan_usedw >= 10'd504), (chan_usedw ==0),  
+                       ready_to_send, state[1:0]};
+
+    assign true_rssi = (rd_select[1]) ? ((rd_select[0]) ? rssi_3:rssi_2) :
+							((rd_select[0]) ? rssi_1:rssi_0);
+    assign true_channel = (check_next == 4'd0 ? 5'h1f : {1'd0, check_next - 4'd1});
+    assign ready_to_send = (chan_usedw >= 10'd504) || (chan_usedw == 0) || 
+                           ((rd_select == NUM_CHAN)&&(chan_usedw > 0));
+		
+    always @(posedge rxclk)
+    begin
+        if (reset)
+          begin
+            overrun <= 0;
+            WR <= 0;
+            rd_select <= 0;
+            chan_rdreq <= 0;
+            timestamp_complete <= 0;
+            check_next <= 0;
+            state <= `IDLE;
+          end
+        else case (state)
+            `IDLE: begin
+		chan_rdreq <= #1 0;
+		//check if the channel is full
+		if(~chan_empty[check_next])
+		  begin
+                    if (have_space)
+                      begin
+                        //transmit if the usb buffer have space
+                       //check if we should send
+                       if (ready_to_send)
+                           state <= #1 `HEADER1;
+						    
+                       overrun[check_next] <= 0;
+                      end
+                  else
+                    begin
+                      state <= #1 `IDLE;
+                      overrun[check_next] <= 1;
+                    end
+                  rd_select <= #1 check_next;
+                end
+                check_next <= #1 (check_next == channels ? 4'd0 : check_next + 4'd1);
+            end
+            
+            `HEADER1: begin
+                fifodata[`PAYLOAD_LEN] <= #1 9'd504;
+                payload_len <= #1 9'd504;
+                fifodata[`TAG] <= #1 0;
+                fifodata[`MBZ] <= #1 0;
+                WR <= #1 1;
+                
+                state <= #1 `HEADER2;
+                read_length <= #1 0;
+            end
+            
+            `HEADER2: begin
+                fifodata[`CHAN] <= #1 true_channel;
+                fifodata[`RSSI] <= #1 true_rssi[5:0];
+                fifodata[`BURST] <= #1 0;
+                fifodata[`DROPPED] <= #1 0;
+                fifodata[`UNDERRUN] <= #1 (check_next == 0) ? 1'b0 : underrun[true_channel];
+                fifodata[`OVERRUN] <= #1 (check_next == 0) ? 1'b0 : overrun[true_channel];
+                state <= #1 `TIMESTAMP;
+            end
+            
+            `TIMESTAMP: begin
+                fifodata <= #1 (timestamp_complete ? timestamp_clock[31:16] : timestamp_clock[15:0]);
+                timestamp_complete <= #1 ~timestamp_complete;
+                
+                if (~timestamp_complete)
+                    chan_rdreq <= #1 1;
+                
+                state <= #1 (timestamp_complete ? `FORWARD : `TIMESTAMP);
+            end
+            
+            `FORWARD: begin
+                read_length <= #1 read_length + 9'd2;
+                fifodata <= #1 (read_length >= payload_len ? 16'hDEAD : chan_fifodata);
+                
+                if (read_length >= `MAXPAYLOAD)
+                  begin
+                    WR <= #1 0;
+                    state <= #1 `IDLE;
+					chan_rdreq <= #1 0;
+                  end
+                else if (read_length == payload_len - 4)
+                    chan_rdreq <= #1 0;
+            end
+            
+            default: begin
+				//handling error state
+                state <= `IDLE;
+            end
+            endcase
+    end
+endmodule </s>"
+"<s>[INST] Generate a Verilog module with the following description: Verilog module with input/output connections
+[/INST]
+module submod_mod (/*AUTOARG*/
+                   // Outputs
+                   q,
+                   // Inputs
+                   a
+                   );
+   input  a;
+   output q;
+endmodule </s>"
+"<s>[INST] Generate a Verilog module with the following description: Verilog module with output q.
+[/INST]
+module SUBMOD_UNDEFED (/*AUTOARG*/
+                       // Outputs
+                       q
+                       );
+   output q;
+endmodule </s>"
+"<s>[INST] Generate a Verilog module with the following description: Module with output signal.[/INST]
+module `SUBMOD_DECL (/*AUTOARG*/
+                     // Outputs
+                     q
+                     );
+   output q;
+endmodule </s>"
+"<s>[INST] Generate a Verilog module with the following description: RAM and CSR module with parameters.[/INST]
+module rw_manager_ram_csr #(
+   parameter DATA_WIDTH = 32,
+   parameter ADDR_WIDTH = 2,
+   parameter NUM_WORDS = 4
+) (
+   input                         csr_clk,
+   input                         csr_ena,
+   input                         csr_din,
+
+   input                         ram_clk,
+   input                         wren,
+   input      [(DATA_WIDTH-1):0] data,
+   input      [(ADDR_WIDTH-1):0] wraddress,
+   input      [(ADDR_WIDTH-1):0] rdaddress,
+
+   output reg [(DATA_WIDTH-1):0] q,
+   output reg                    csr_dout
+);
+
+
+localparam integer DATA_COUNT = DATA_WIDTH*NUM_WORDS;
+
+reg  [DATA_COUNT-1:0] all_data;
+wire [DATA_COUNT-1:0] load_data;
+wire [DATA_WIDTH-1:0] row_data [NUM_WORDS-1:0];
+
+wire int_clk;
+
+assign int_clk = (~csr_ena)? csr_clk : ram_clk;
+
+always @(posedge int_clk)
+begin
+   if (~csr_ena)
+      all_data <= {all_data[DATA_COUNT-2:0], csr_din};
+   else if (wren)
+      all_data <= load_data;
+   else
+      all_data <= all_data;
+
+   q <= row_data[rdaddress];
+end
+
+always @(negedge csr_clk)
+begin
+   csr_dout <= all_data[DATA_COUNT-1];
+end
+
+generate
+
+genvar i;
+
+
+   for (i = 0; i < (NUM_WORDS); i = i + 1)
+   begin: row_assign
+     assign row_data[i] = all_data[(DATA_WIDTH*(i+1)-1) : (DATA_WIDTH*i)];
+   end
+
+endgenerate
+
+generate
+
+genvar j,k;
+
+   for (j = 0; j < (NUM_WORDS); j = j + 1)
+   begin: row
+     for (k = 0; k < (DATA_WIDTH); k = k + 1)
+     begin: column
+        assign load_data[(DATA_WIDTH*j)+k] = (wraddress == j)? data[k] : all_data[(DATA_WIDTH*j)+k];
+     end
+   end
+endgenerate
+
+endmodule </s>"
+"<s>[INST] Generate a Verilog module with the following description: Clock dividing module with counter.[/INST]
+module ClockDivider
+	#(parameter Bits_counter = 32)
+	 (	input  P_CLOCK,
+		output P_TIMER_OUT,
+		input  [Bits_counter-1:0] P_COMPARATOR);
+//=======================================================
+//  PARAMETER declarations
+//=======================================================
+
+
+//=======================================================
+//  PORT declarations
+//=======================================================
+
+
+//=======================================================
+//  REG/WIRE declarations
+//=======================================================
+   reg [Bits_counter-1:0] r_Timer;
+   reg r_Result;
+	
+//=======================================================
+//  Structural coding
+//=======================================================
+   always @(posedge P_CLOCK)
+	begin
+		if (r_Timer >= P_COMPARATOR)
+			begin
+			     r_Result <= !r_Result;
+			     r_Timer <= 0;
+			end		
+		else
+		   begin
+			     r_Timer <= r_Timer+1; 
+				  r_Result <= r_Result;
+		   end
+	end	
+//=======================================================
+// 			Connections & assigns
+//=======================================================
+assign P_TIMER_OUT = r_Result; 
+
+endmodule </s>"
+"<s>[INST] Write Verilog code for a pipeline processor with 3 stages (IF, ID, EX).[/INST] module pipeline_processor (input wire clk, reset, input wire [31:0] instr, output wire [31:0] result);
+    reg [31:0] if_reg, id_reg, ex_reg;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            if_reg <= 0;
+            id_reg <= 0;
+            ex_reg <= 0;
+        end else begin
+            if_reg <= instr; // Fetch
+            id_reg <= if_reg; // Decode
+            ex_reg <= id_reg + 1; // Execute
+        end
+    end
+    assign result = ex_reg;
+endmodule [\INST] </s>"
+"<s>[INST] Design Verilog code for a VGA signal generator for 640x480 resolution.[/INST] module vga_generator (input wire clk, reset, output wire hsync, vsync, output reg [9:0] x, y);
+    reg [9:0] h_count, v_count;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            h_count <= 0;
+            v_count <= 0;
+        end else begin
+            if (h_count == 799) begin
+                h_count <= 0;
+                if (v_count == 524)
+                    v_count <= 0;
+                else
+                    v_count <= v_count + 1;
+            end else
+                h_count <= h_count + 1;
+        end
+    end
+    assign hsync = (h_count >= 656 && h_count < 752);
+    assign vsync = (v_count >= 490 && v_count < 492);
+    assign x = (h_count < 640) ? h_count : 10'b0;
+    assign y = (v_count < 480) ? v_count : 10'b0;
+endmodule[\INST]  </s>"
+"<s>[INST] Write Verilog code for a dual-clock FIFO.[/INST] module dual_clock_fifo (input wire wr_clk, rd_clk, reset, we, re, input wire [7:0] data_in, output reg [7:0] data_out);
+    reg [7:0] fifo_mem [15:0];
+    reg [3:0] wr_ptr, rd_ptr;
+    always @(posedge wr_clk or posedge reset) begin
+        if (reset)
+            wr_ptr <= 0;
+        else if (we)
+            fifo_mem[wr_ptr] <= data_in;
+    end
+    always @(posedge rd_clk or posedge reset) begin
+        if (reset)
+            rd_ptr <= 0;
+        else if (re)
+            data_out <= fifo_mem[rd_ptr];
+    end
+endmodule [\INST]</s>"
+"<s>[INST] Create Verilog code for an SDRAM controller interface.[/INST] module sdram_controller (input wire clk, reset, input wire [23:0] addr, input wire [15:0] data_in, output wire [15:0] data_out);
+    // SDRAM command implementation
+    // Initialization and state machine logic goes here
+endmodule [\INST]</s>"
+"<s>[INST] Write Verilog code for a 4-bit BCD adder.[/INST] module bcd_adder (input wire [3:0] a, b, input wire cin, output reg [3:0] sum, output reg cout);
+    reg [4:0] temp;
+    always @(*) begin
+        temp = a + b + cin;
+        if (temp > 4'b1001) begin
+            sum = temp - 4'b1010;
+            cout = 1;
+        end else begin
+            sum = temp[3:0];
+            cout = 0;
+        end
+    end
+endmodule [\INST]</s>"
+"<s>[INST] Generate Verilog code for a 16-to-1 multiplexer using 4-to-1 multiplexers. [/INST]module mux16to1 (input wire [15:0] data, input wire [3:0] sel, output wire y);
+    wire [3:0] mux_out;
+    mux4to1 m1 (.data(data[3:0]), .sel(sel[1:0]), .y(mux_out[0]));
+    mux4to1 m2 (.data(data[7:4]), .sel(sel[1:0]), .y(mux_out[1]));
+    mux4to1 m3 (.data(data[11:8]), .sel(sel[1:0]), .y(mux_out[2]));
+    mux4to1 m4 (.data(data[15:12]), .sel(sel[1:0]), .y(mux_out[3]));
+    mux4to1 final (.data(mux_out), .sel(sel[3:2]), .y(y));
+endmodule[\INST]  </s>"
+"<s>[INST] Create Verilog code for an I2C controller with master functionality.[/INST] module i2c_master (input wire clk, reset, input wire start, input wire [7:0] data, output reg scl, sda);
+    reg [3:0] state;
+    parameter IDLE = 0, START = 1, WRITE = 2, STOP = 3;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state <= IDLE;
+            scl <= 1;
+            sda <= 1;
+        end else begin
+            case (state)
+                IDLE: if (start) state <= START;
+                START: begin
+                    sda <= 0;
+                    state <= WRITE;
+                end
+                WRITE: begin
+                    scl <= 0;
+                    sda <= data[7]; // MSB first
+                    state <= STOP;
+                end
+                STOP: begin
+                    scl <= 1;
+                    sda <= 1;
+                    state <= IDLE;
+                end
+            endcase
+        end
+    end
+endmodule [\INST] </s>"
