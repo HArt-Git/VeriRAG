@@ -52,7 +52,7 @@ Hybrid Retrieval (SPARQL + Vector)
         ↓  
 Prompt Builder  
        ↓  
-LLM (GPT-4o)  
+      LLM   
        ↓  
 Verilog RTL / SVA Generation
 
