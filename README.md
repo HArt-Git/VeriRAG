@@ -4,11 +4,17 @@ VeriRAG is an **open-source framework** that unifies **Knowledge Graphs (KG)** a
 
 If you find this paper as useful, please cite as:
 
-@inproceedings{verirag-aspdac,
-  title={VeriRAG: A Knowledge Graph-Augmented RAG for Verilog and Assertion Generation},
-  author={Jayanth ,Thangellamudi and Saravanan, Raghul and Sai Manoj, P D},
-  booktitle={IEEE/ACM ASP-DAC},
-  year={2026}
+@INPROCEEDINGS{11420790,
+  author={Thangellamudi, Jayanth and Saravanan, Raghul and Dinakarrao, Sai Manoj Pudukotai},
+  booktitle={2026 31st Asia and South Pacific Design Automation Conference (ASP-DAC)}, 
+  title={VeriRAG: A Knowledge Graph-Augmented RAG for Verilog and Assertion Generation}, 
+  year={2026},
+  volume={},
+  number={},
+  pages={105-111},
+  keywords={Design automation;Semantics;Retrieval augmented generation;Knowledge graphs;Syntactics;Hybrid power systems;Hardware;Vectors;Hardware design languages;Standards},
+  doi={10.1109/ASP-DAC66049.2026.11420790}}
+
 
 
 
