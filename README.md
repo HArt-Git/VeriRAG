@@ -13,7 +13,7 @@ If you find this paper as useful, please cite as:
   number={},
   pages={105-111},
   keywords={Design automation;Semantics;Retrieval augmented generation;Knowledge graphs;Syntactics;Hybrid power systems;Hardware;Vectors;Hardware design languages;Standards},
-  doi={10.1109/ASP-DAC66049.2026.11420790}}
+  doi={[10.1109/ASP-DAC66049.2026.11420790](https://doi.org/10.1109/ASP-DAC66049.2026.11420790)}}
 
 
 
